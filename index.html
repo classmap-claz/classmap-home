@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClassMap HOME — 학부모 학교폭력 예방</title>
+  <meta name="description" content="우리 아이의 학교생활, 가정에서 함께 지켜요. 3분 진단으로 자녀의 또래관계를 확인하고, 학교폭력 예방교육을 이수하세요.">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <!-- 히어로 -->
+  <div class="hero">
+    <div class="home-letters">
+      <div class="hl-chip"><span class="hl-letter">H</span><span class="hl-word">Hear</span><span class="hl-kr">듣고</span></div>
+      <div class="hl-chip"><span class="hl-letter">O</span><span class="hl-word">Observe</span><span class="hl-kr">살피고</span></div>
+      <div class="hl-chip"><span class="hl-letter">M</span><span class="hl-word">Mind</span><span class="hl-kr">마음을 알고</span></div>
+      <div class="hl-chip"><span class="hl-letter">E</span><span class="hl-word">Engage</span><span class="hl-kr">함께하기</span></div>
+    </div>
+    <h1 class="hero-title">우리 아이 마음,<br>3분이면 알 수 있어요</h1>
+    <p class="hero-sub">부모가 보는 아이와 아이가 느끼는 관계는 다를 수 있습니다.<br>진단 결과는 부모님만 봅니다.</p>
+    <a href="check/mind.html" class="hero-cta">
+      <span data-icon="heart"></span> 마음 맞히기 시작
+    </a>
+  </div>
+
+  <div class="wrap" style="margin-top:28px;">
+    <!-- 진단 3종 -->
+    <div class="section-label">자녀 진단</div>
+    <div class="level-tabs" id="levelTabs">
+      <button class="level-tab active" data-level="elem">초등학생</button>
+      <button class="level-tab" data-level="mid">중·고등학생</button>
+    </div>
+    <div class="card-grid" id="checkCards">
+      <a href="check/mind.html?level=elem" class="check-card tilt-1">
+        <div class="cc-icon"><span data-icon="heart"></span></div>
+        <div class="cc-title">마음 맞히기</div>
+        <div class="cc-desc">부모 예측과 아이 응답 비교</div>
+      </a>
+      <a href="check/signs.html?level=elem" class="check-card tilt-2">
+        <div class="cc-icon"><span data-icon="shield"></span></div>
+        <div class="cc-title">징후 체크</div>
+        <div class="cc-desc">학교폭력 징후 12문항</div>
+      </a>
+      <a href="check/social.html?level=elem" class="check-card tilt-3">
+        <div class="cc-icon"><span data-icon="users"></span></div>
+        <div class="cc-title">관계 습관</div>
+        <div class="cc-desc">또래관계 습관 12문항</div>
+      </a>
+    </div>
+
+    <div class="privacy-note">
+      <span data-icon="lock" class="ico"></span>
+      <span>이름·전화번호 등 개인정보를 요구하지 않습니다. 진단 결과는 부모님만 보실 수 있어요.</span>
+    </div>
+
+    <!-- 블로그 캐러셀 -->
+    <div class="section-label">학부모 가이드</div>
+    <div class="blog-carousel" id="blogCarousel">
+      <button class="carousel-btn prev hidden" id="carPrev" aria-label="이전"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="carousel-track" id="blogList"></div>
+      <button class="carousel-btn next hidden" id="carNext" aria-label="다음"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    </div>
+    <div class="tc mt16">
+      <a href="blog/index.html" class="btn btn-ghost btn-sm">모든 글 보기</a>
+    </div>
+
+    <!-- 예방교육 코스 -->
+    <div class="section-label">예방교육 코스</div>
+    <div class="course-preview">
+      <h2>학교폭력 예방교육 5단계</h2>
+      <p>징후 알아차리기부터 사안처리 절차까지, 총 30분이면 완료. 이수증도 발급됩니다.</p>
+      <a href="course/index.html" class="cp-cta">학교 코드로 시작하기</a>
+      <div class="cp-note" id="courseStatus"></div>
+    </div>
+
+    <!-- 대응 가이드 -->
+    <div class="section-label">긴급 대응</div>
+    <div class="card">
+      <h2><span data-icon="compass"></span> 대응 가이드</h2>
+      <p class="desc">아이가 피해를 입었을 때, 가해 통보를 받았을 때, 목격했을 때 — 지금 바로 할 수 있는 3가지.</p>
+      <a href="guide/index.html" class="btn btn-ghost btn-sm mt16">가이드 보기</a>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/progress.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script>
+    HomeNav.render(0);
+    HomeNav.renderFooter(0);
+
+    // 진단 완료 배지
+    ['mind', 'signs', 'social'].forEach(function (id) {
+      if (PE.isDone(id)) {
+        var card = document.querySelector('.check-card[href="check/' + id + '.html"]');
+        if (card) {
+          var badge = document.createElement('div');
+          badge.className = 'cc-badge done';
+          badge.textContent = '완료';
+          card.appendChild(badge);
+        }
+      }
+    });
+
+    // 학교급 탭 전환
+    document.querySelectorAll('#levelTabs .level-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelector('#levelTabs .level-tab.active').classList.remove('active');
+        tab.classList.add('active');
+        var lv = tab.dataset.level;
+        document.querySelectorAll('#checkCards .check-card').forEach(function (card) {
+          var href = card.getAttribute('href');
+          card.setAttribute('href', href.replace(/level=(elem|mid)/, 'level=' + lv));
+        });
+      });
+    });
+
+    // 코스 진행 상태
+    var prog = PE.courseProgress();
+    var statusEl = document.getElementById('courseStatus');
+    if (PE.isCourseDone()) {
+      statusEl.textContent = '이수 완료 (' + PE.fmtDate(PE.courseDoneDate()) + ')';
+    } else if (prog > 0) {
+      statusEl.textContent = prog + '/5 모듈 완료 — 이어서 학습하기';
+    } else if (PE.hasSession()) {
+      statusEl.textContent = PE.schoolName() + ' 인증됨';
+    }
+
+    // 블로그 캐러셀
+    fetch('blog/posts.json')
+      .then(function (r) { return r.json(); })
+      .then(function (posts) {
+        var track = document.getElementById('blogList');
+        var recent = posts.slice(0, 6);
+        track.innerHTML = recent.map(function (p) {
+          var thumbHtml = p.thumb
+            ? '<div class="bc-thumb"><img src="' + p.thumb + '" alt="' + p.title + '" loading="lazy"></div>'
+            : '';
+          return '<a href="blog/' + p.slug + '.html" class="blog-card-v2">' +
+            thumbHtml +
+            '<div class="bc-info">' +
+              '<span class="bc-tag">' + p.tag + '</span>' +
+              '<div class="bc-title">' + p.title + '</div>' +
+              '<div class="bc-date">' + p.date + '</div>' +
+            '</div>' +
+          '</a>';
+        }).join('');
+
+        var prevBtn = document.getElementById('carPrev');
+        var nextBtn = document.getElementById('carNext');
+        function updateArrows() {
+          prevBtn.classList.toggle('hidden', track.scrollLeft < 10);
+          nextBtn.classList.toggle('hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 10);
+        }
+        track.addEventListener('scroll', updateArrows);
+        updateArrows();
+        prevBtn.addEventListener('click', function () { track.scrollBy({ left: -290, behavior: 'smooth' }); });
+        nextBtn.addEventListener('click', function () { track.scrollBy({ left: 290, behavior: 'smooth' }); });
+      })
+      .catch(function () {
+        document.getElementById('blogList').innerHTML =
+          '<p class="small tc">블로그 글이 곧 추가됩니다.</p>';
+      });
+  </script>
+</body>
+</html>

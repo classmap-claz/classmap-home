@@ -1,0 +1,9 @@
+# 내부 문서 — 공개 저장소 커밋 금지 (CLAUDE.md 규칙)
+README.md
+FIREBASE-SETUP.md
+HANDOFF.md
+parent-site-mvp-spec.md
+.claude/
+
+# Firebase 설정 — 저장소에 올리지 않음. 배포 시 GitHub Secret(FIREBASE_CONFIG_JS)에서 주입됨
+assets/js/firebase-config.js

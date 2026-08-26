@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>학교 대시보드 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  /* ─── KPI ─── */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px; text-align: center; }
+  .kpi .kv { font-family: var(--font-en); font-size: 1.55rem; font-weight: 800; color: var(--navy-deep); line-height: 1.2; }
+  .kpi .ks { font-family: var(--font-en); font-size: 0.82rem; font-weight: 700; color: var(--coral-deep); }
+  .kpi .kl { font-size: 0.73rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+
+  /* ─── Section Nav ─── */
+  .dash-nav { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; margin-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .dash-nav::-webkit-scrollbar { display: none; }
+  .dash-nav a {
+    flex: none; padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    text-decoration: none; color: var(--muted); background: var(--line-soft); white-space: nowrap;
+    transition: all .15s;
+  }
+  .dash-nav a:hover, .dash-nav a:active { background: var(--navy); color: #fff; }
+
+  /* ─── Action Bar ─── */
+  .action-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .action-bar button {
+    padding: 8px 14px; border: 1.5px solid var(--line); border-radius: 10px;
+    background: var(--card); font-size: 0.8rem; font-weight: 600; color: var(--navy);
+    cursor: pointer; transition: all .15s;
+  }
+  .action-bar button:hover { border-color: var(--navy-soft); background: #EEF2F9; }
+
+  /* ─── Trend Chart ─── */
+  .trend-wrap { position: relative; }
+  .trend-chart { display: flex; align-items: flex-end; gap: 2px; height: 100px; padding: 0 2px; }
+  .trend-bar {
+    flex: 1; background: var(--navy-soft); border-radius: 3px 3px 0 0; min-width: 3px;
+    position: relative; cursor: default; transition: background .15s;
+  }
+  .trend-bar:hover { background: var(--coral-deep); }
+  .trend-bar .tt {
+    display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: var(--navy-deep); color: #fff; font-size: 0.68rem; padding: 3px 7px;
+    border-radius: 6px; white-space: nowrap; margin-bottom: 4px; z-index: 10;
+  }
+  .trend-bar:hover .tt { display: block; }
+  .trend-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+
+  /* ─── Funnel ─── */
+  .funnel-step { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .funnel-step .fl { width: 72px; flex: none; font-size: 0.78rem; font-weight: 600; color: var(--ink); text-align: right; }
+  .funnel-step .ft { flex: 1; background: var(--line-soft); border-radius: 6px; height: 26px; overflow: hidden; }
+  .funnel-step .ff { height: 100%; border-radius: 6px; transition: width .4s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; }
+  .funnel-step .fv { flex: none; width: 50px; text-align: right; font-family: var(--font-en); font-size: 0.82rem; font-weight: 700; color: var(--navy-deep); }
+  .funnel-conv { text-align: center; font-size: 0.72rem; color: var(--muted); margin: -4px 0 6px 80px; }
+  .funnel-conv b { color: var(--coral-deep); font-family: var(--font-en); }
+
+  /* ─── Bar Rows ─── */
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.82rem; }
+  .bar-row .bl { width: 42px; flex: none; font-weight: 600; }
+  .bar-row .bt { flex: 1; background: var(--line-soft); border-radius: 6px; height: 18px; overflow: hidden; }
+  .bar-row .bf { height: 100%; border-radius: 6px; min-width: 2px; transition: width .3s ease; }
+  .bar-row .bn { width: 34px; flex: none; text-align: right; font-family: var(--font-en); font-weight: 700; color: var(--navy); }
+
+  /* ─── Tables ─── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--line-soft); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.75rem; }
+  td:first-child { font-weight: 700; color: var(--navy-deep); }
+
+  /* ─── Likert Bar ─── */
+  .likert-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .likert-row .lq { flex: 1; font-size: 0.85rem; font-weight: 600; }
+  .likert-row .lv { font-family: var(--font-en); font-size: 1.1rem; font-weight: 800; color: var(--navy-deep); width: 50px; text-align: right; flex: none; }
+  .likert-track { width: 100px; height: 8px; background: var(--line-soft); border-radius: 999px; flex: none; overflow: hidden; }
+  .likert-fill { height: 100%; background: var(--ok); border-radius: 999px; }
+
+  /* ─── Insights ─── */
+  .insight-card { padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85rem; line-height: 1.6; }
+  .insight-card b { font-weight: 800; }
+  .insight-card.positive { background: var(--ok-bg); border: 1px solid var(--ok-line); color: #1F6E4E; }
+  .insight-card.warning { background: var(--warn-bg); border: 1px solid var(--warn-line); color: #7C5A1A; }
+  .insight-card.action { background: #EEF2F9; border: 1px solid #DCE3F1; color: var(--navy-deep); }
+
+  /* ─── Search ─── */
+  .search-box { width: 100%; padding: 10px 14px; border: 1.5px solid var(--line); border-radius: 10px; font-size: 0.88rem; font-family: var(--font-kr); outline: none; margin-bottom: 10px; }
+  .search-box:focus { border-color: var(--navy-soft); }
+
+  /* ─── Section ─── */
+  .section-title { font-size: 1.08rem; font-weight: 700; color: var(--navy-deep); margin-bottom: 8px; scroll-margin-top: 60px; }
+
+  /* ─── Print ─── */
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    .top-header, .dash-nav, .action-bar, #authStep, .search-box, #site-nav { display: none !important; }
+    .wrap { max-width: 100%; padding: 0 10mm; }
+    .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+    .kpi { break-inside: avoid; }
+    .trend-bar .tt { display: none !important; }
+    .hidden { display: none !important; }
+    .site-footer { font-size: 9pt; }
+  }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <!-- ════════ 관리자 인증 ════════ -->
+  <div id="authStep">
+    <h1 class="page-title"><span data-icon="school" style="color:var(--navy-soft);"></span> 학교 대시보드</h1>
+    <p class="page-sub">학교 관리자 전용 페이지입니다</p>
+    <div class="card">
+      <div class="field">
+        <label for="schoolCode">학교 코드</label>
+        <input type="text" id="schoolCode" placeholder="예: SCH123" autocapitalize="characters" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="adminPw">관리 비밀번호</label>
+        <input type="password" id="adminPw" placeholder="학교 관리자 비밀번호" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="btnAuth">대시보드 열기</button>
+      <p class="small tc mt8" id="authMsg" style="min-height:22px;color:var(--risk);"></p>
+    </div>
+    <p class="small">비밀번호 문의: <a href="mailto:classmap@claz.kr">classmap@claz.kr</a></p>
+  </div>
+
+  <!-- ════════ 대시보드 ════════ -->
+  <div id="reportStep" class="hidden">
+    <h1 class="page-title" id="rTitle">대시보드</h1>
+    <p class="page-sub" id="rSub"></p>
+
+    <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+      <span>이 대시보드는 <b>집계 수치만</b> 표시합니다. 개별 학부모의 접속 기록·열람 페이지·점검 결과는 수집 자체를 하지 않아 표시할 수 없습니다.</span>
+    </div>
+
+    <nav class="dash-nav" id="dashNav">
+      <a href="#sec-kpi">현황</a>
+      <a href="#sec-trend">추이</a>
+      <a href="#sec-funnel">퍼널</a>
+      <a href="#sec-grade">학년</a>
+      <a href="#sec-class">반별</a>
+      <a href="#sec-content">콘텐츠</a>
+      <a href="#sec-survey">인식조사</a>
+      <a href="#sec-cert">이수자</a>
+      <a href="#sec-insight">인사이트</a>
+    </nav>
+
+    <div class="action-bar">
+      <button id="btnRefresh"><span data-icon="sparkle"></span> 새로고침</button>
+      <button onclick="window.print()"><span data-icon="doc"></span> 인쇄</button>
+      <button id="btnCSV"><span data-icon="download"></span> 이수자 CSV</button>
+    </div>
+
+    <!-- KPI -->
+    <div id="sec-kpi" class="section-title">참여 현황</div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kv" id="kParents">–</div><div class="ks" id="kRate"></div><div class="kl">참여 학부모<br>(기기 기준 추정치)</div></div>
+      <div class="kpi"><div class="kv" id="kAvg">–</div><div class="kl">참여자당<br>평균 활동 수</div></div>
+      <div class="kpi"><div class="kv" id="kCourse">–</div><div class="ks" id="kCourseRate"></div><div class="kl">코스 이수 완료</div></div>
+      <div class="kpi"><div class="kv" id="kCert">–</div><div class="ks" id="kCertSub"></div><div class="kl">이수증 발급</div></div>
+    </div>
+
+    <!-- Trend -->
+    <div class="card">
+      <h2 id="sec-trend" class="section-title">일별 참여 추이</h2>
+      <p class="desc" id="trendDesc"></p>
+      <div class="trend-wrap mt8">
+        <div class="trend-chart" id="trendChart"></div>
+        <div class="trend-labels" id="trendLabels"></div>
+      </div>
+    </div>
+
+    <!-- Funnel -->
+    <div class="card">
+      <h2 id="sec-funnel" class="section-title">전환 퍼널</h2>
+      <p class="desc" style="margin-bottom:12px;">진입부터 이수증까지, 각 단계의 전환율을 확인하세요.</p>
+      <div id="funnelBox"></div>
+    </div>
+
+    <!-- Grade -->
+    <div class="card">
+      <h2 id="sec-grade" class="section-title">학년별 참여 현황</h2>
+      <div id="gradeBars" class="mt8"></div>
+    </div>
+
+    <!-- Class -->
+    <div class="card">
+      <h2 id="sec-class" class="section-title">반별 참여 현황</h2>
+      <p class="desc" style="margin-bottom:10px;">진입·모듈 이수·코스 이수만 집계합니다 (점검 관련 수치는 학년 단위까지만 제공).</p>
+      <div style="overflow-x:auto;"><table id="classTable"></table></div>
+      <p class="small mt8">참여 3건 미만인 반은 "3건 미만"으로 표시됩니다.</p>
+    </div>
+
+    <!-- Content -->
+    <div class="card">
+      <h2 id="sec-content" class="section-title">콘텐츠별 참여</h2>
+      <div id="contentRank" class="mt8"></div>
+      <h2 class="section-title mt16">코스 퍼널 (모듈별 이수)</h2>
+      <p class="desc" style="margin-bottom:10px;">어느 모듈에서 이탈이 생기는지 확인하세요.</p>
+      <div id="moduleFunnel"></div>
+    </div>
+
+    <!-- Survey -->
+    <div class="card">
+      <h2 id="sec-survey" class="section-title">학부모 인식 조사 (익명 집계)</h2>
+      <div id="surveyBox" class="mt8"></div>
+    </div>
+
+    <!-- Certs -->
+    <div class="card">
+      <h2 id="sec-cert" class="section-title">이수자 명단 (제공 동의 건만)</h2>
+      <input type="text" class="search-box" id="certSearch" placeholder="이름으로 검색...">
+      <div style="overflow-x:auto;"><table id="certTable"></table></div>
+      <p class="small mt8">학부모가 학교 제공에 동의한 건만 표시됩니다.</p>
+    </div>
+
+    <!-- Insights -->
+    <div class="card">
+      <h2 id="sec-insight" class="section-title"><span data-icon="bulb" style="color:var(--warn);"></span> 핵심 인사이트</h2>
+      <div id="insightBox" class="mt8"></div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  var $ = function (id) { return document.getElementById(id); };
+  var _code = '';
+
+  /* ──── SHA-256 ──── */
+  function sha256(msg) {
+    var buf = new TextEncoder().encode(msg);
+    return crypto.subtle.digest('SHA-256', buf).then(function (hash) {
+      return Array.from(new Uint8Array(hash)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    });
+  }
+
+  /* ──── Auth ──── */
+  $('btnAuth').addEventListener('click', auth);
+  $('adminPw').addEventListener('keydown', function (e) { if (e.key === 'Enter') auth(); });
+
+  function auth() {
+    var code = $('schoolCode').value.trim().toUpperCase();
+    var pw = $('adminPw').value;
+    if (!code || !pw) { $('authMsg').textContent = '학교 코드와 비밀번호를 입력해 주세요'; return; }
+    if (!HomeDB.isLive()) { $('authMsg').textContent = '데이터 연결이 설정되지 않았어요 (로컬 모드)'; return; }
+    $('authMsg').textContent = '';
+    sha256(pw).then(function (hash) {
+      return HomeDB.verifyAdmin(code, hash);
+    }).then(function (ok) {
+      if (!ok) { $('authMsg').textContent = '학교 코드 또는 비밀번호가 올바르지 않습니다'; return; }
+      _code = code;
+      loadReport(code);
+    });
+  }
+
+  /* ──── Data Load ──── */
+  function loadReport(code) {
+    $('authStep').classList.add('hidden');
+    $('reportStep').classList.remove('hidden');
+    Promise.all([
+      HomeDB.getSchoolInfo(code),
+      HomeDB.getEvents(code),
+      HomeDB.getCerts(code),
+      HomeDB.getSurveys(code),
+      HomeDB.getStats(code)
+    ]).then(function (r) {
+      render(code, r[0] || {}, r[1] || {}, r[2] || {}, r[3] || {}, r[4] || {});
+    });
+  }
+
+  $('btnRefresh').addEventListener('click', function () { if (_code) loadReport(_code); });
+
+  /* ──── Content Titles ──── */
+  var TITLES = {
+    signs: '학교폭력 징후 체크', social: '관계 습관 체크', mind: '마음 맞히기',
+    m1: 'M1 징후 알아차리기', m2: 'M2 대화하는 법', m3: 'M3 사이버폭력',
+    m4: 'M4 사안처리 절차', m5: 'M5 가해 관련 통보'
+  };
+  var GRADES = ['초1','초2','초3','초4','초5','초6','중1','중2','중3','고1','고2','고3'];
+
+  /* ──── Render ──── */
+  function render(code, school, eventsObj, certsObj, surveysObj, statsObj) {
+    var events = objToArr(eventsObj);
+    var certs  = objToArr(certsObj);
+    var surveys = objToArr(surveysObj);
+    var schoolName = school.name || code;
+    var totalParents = Number((statsObj && statsObj.totalParents) || school.totalParents || 0);
+    var certCountTotal = Number((statsObj && statsObj.certCount) || 0);
+
+    /* Header */
+    $('rTitle').textContent = schoolName + ' 대시보드';
+    $('rSub').textContent = '집계 시점: ' + new Date().toLocaleString('ko-KR');
+    document.title = schoolName + ' 대시보드 — ClassMap HOME';
+
+    /* ── Compute Metrics ── */
+    var allDevices = {};        // 모든 이벤트의 고유 기기
+    var actDevices = {};        // 1개 이상 활동(check/module) 완료 기기
+    var m1Devices = {};         // M1 이수 기기
+    var courseDoneDevices = {}; // 코스 이수 기기
+    var doneEvents = 0;         // check_done + module_done 건수
+    var byDate = {};            // 일별 진입 기기
+
+    events.forEach(function (e) {
+      if (e.deviceId) allDevices[e.deviceId] = true;
+      if (e.type === 'check_done' || e.type === 'module_done') {
+        doneEvents++;
+        if (e.deviceId) actDevices[e.deviceId] = true;
+      }
+      if (e.type === 'module_done' && e.contentId === 'm1' && e.deviceId) m1Devices[e.deviceId] = true;
+      if (e.type === 'course_done' && e.deviceId) courseDoneDevices[e.deviceId] = true;
+
+      /* 일별 그룹 */
+      if (e.ts && e.type === 'enter') {
+        var dk = dateKey(e.ts);
+        byDate[dk] = byDate[dk] || {};
+        if (e.deviceId) byDate[dk][e.deviceId] = true;
+      }
+    });
+
+    var nAll  = Object.keys(allDevices).length;
+    var nAct  = Object.keys(actDevices).length;
+    var nM1   = Object.keys(m1Devices).length;
+    var nDone = Object.keys(courseDoneDevices).length;
+
+    /* ── KPIs ── */
+    $('kParents').textContent = nAll;
+    $('kRate').textContent = totalParents > 0 ? pct(nAll, totalParents) + ' 참여율' : '';
+    $('kAvg').textContent = nAll ? (doneEvents / nAll).toFixed(1) : '0';
+    $('kCourse').textContent = nDone;
+    $('kCourseRate').textContent = nAll > 0 ? pct(nDone, nAll) + ' 이수율' : '';
+    $('kCert').textContent = Math.max(certCountTotal, certs.length);
+    $('kCertSub').textContent = certs.length > 0 ? '동의 ' + certs.length + '건' : '';
+
+    /* ── Trend ── */
+    renderTrend(byDate);
+
+    /* ── Funnel ── */
+    renderFunnel(nAll, nAct, nM1, nDone, Math.max(certCountTotal, certs.length));
+
+    /* ── Grade ── */
+    renderGrade(events);
+
+    /* ── Class ── */
+    renderClass(events);
+
+    /* ── Content ── */
+    renderContent(events);
+
+    /* ── Module Funnel ── */
+    renderModuleFunnel(events);
+
+    /* ── Survey ── */
+    renderSurvey(surveys);
+
+    /* ── Certs ── */
+    renderCerts(certs);
+
+    /* ── Insights ── */
+    renderInsights(nAll, nAct, nM1, nDone, totalParents, events, surveys, certs);
+  }
+
+  /* ──── Trend ──── */
+  function renderTrend(byDate) {
+    var keys = Object.keys(byDate).sort();
+    if (!keys.length) {
+      $('trendChart').innerHTML = '<p class="small">아직 참여 데이터가 없어요.</p>';
+      $('trendDesc').textContent = '';
+      return;
+    }
+
+    /* 최근 30일만 */
+    var last30 = keys.slice(-30);
+    var counts = last30.map(function (k) { return Object.keys(byDate[k]).length; });
+    var maxC = Math.max.apply(null, counts.concat([1]));
+
+    $('trendDesc').textContent = last30[0] + ' ~ ' + last30[last30.length - 1] + ' (' + last30.length + '일)';
+    $('trendChart').innerHTML = last30.map(function (k, i) {
+      var n = counts[i];
+      var h = Math.max(n / maxC * 100, 3);
+      return '<div class="trend-bar" style="height:' + h + '%"><span class="tt">' + fmtDateShort(k) + ' · ' + n + '명</span></div>';
+    }).join('');
+
+    $('trendLabels').innerHTML = '<span>' + fmtDateShort(last30[0]) + '</span><span>' + fmtDateShort(last30[last30.length - 1]) + '</span>';
+  }
+
+  /* ──── Funnel ──── */
+  function renderFunnel(nAll, nAct, nM1, nDone, nCert) {
+    var stages = [
+      { label: '진입', n: nAll, color: 'var(--navy-soft)' },
+      { label: '활동 시작', n: nAct, color: 'var(--h-observe)' },
+      { label: '코스 시작', n: nM1, color: 'var(--h-mind)' },
+      { label: '코스 이수', n: nDone, color: 'var(--h-engage)' },
+      { label: '이수증', n: nCert, color: 'var(--coral-deep)' }
+    ];
+    var max = Math.max(nAll, 1);
+    var html = '';
+    for (var i = 0; i < stages.length; i++) {
+      var s = stages[i];
+      var w = s.n / max * 100;
+      html += '<div class="funnel-step">' +
+        '<span class="fl">' + s.label + '</span>' +
+        '<span class="ft"><span class="ff" style="width:' + w + '%;background:' + s.color + ';"></span></span>' +
+        '<span class="fv">' + s.n + '</span></div>';
+      if (i < stages.length - 1) {
+        var prev = stages[i].n;
+        var next = stages[i + 1].n;
+        var rate = prev > 0 ? Math.round(next / prev * 100) : 0;
+        html += '<div class="funnel-conv">↓ 전환율 <b>' + rate + '%</b></div>';
+      }
+    }
+    $('funnelBox').innerHTML = html;
+  }
+
+  /* ──── Grade ──── */
+  function renderGrade(events) {
+    var byGrade = {};
+    events.forEach(function (e) {
+      if (e.type !== 'enter' || !e.grade) return;
+      byGrade[e.grade] = byGrade[e.grade] || {};
+      if (e.deviceId) byGrade[e.grade][e.deviceId] = true;
+    });
+    var gradeCounts = GRADES.map(function (g) { return { g: g, n: Object.keys(byGrade[g] || {}).length }; })
+                            .filter(function (x) { return x.n > 0; });
+    var maxG = Math.max.apply(null, gradeCounts.map(function (x) { return x.n; }).concat([1]));
+    $('gradeBars').innerHTML = gradeCounts.length
+      ? gradeCounts.map(function (x) {
+          return '<div class="bar-row"><span class="bl">' + x.g + '</span>' +
+            '<span class="bt"><span class="bf" style="width:' + (x.n / maxG * 100) + '%;background:var(--navy-soft);"></span></span>' +
+            '<span class="bn">' + x.n + '</span></div>';
+        }).join('')
+      : '<p class="small">아직 참여 데이터가 없어요.</p>';
+  }
+
+  /* ──── Class ──── */
+  function renderClass(events) {
+    var byClass = {};
+    events.forEach(function (e) {
+      if (e.type === 'check_done' || !e.classNo || !e.grade) return;
+      var key = e.grade + '|' + e.classNo;
+      byClass[key] = byClass[key] || { enter: {}, mod: 0, course: 0 };
+      if (e.type === 'enter' && e.deviceId) byClass[key].enter[e.deviceId] = true;
+      if (e.type === 'module_done') byClass[key].mod++;
+      if (e.type === 'course_done') byClass[key].course++;
+    });
+    var classKeys = Object.keys(byClass).sort();
+    $('classTable').innerHTML = classKeys.length
+      ? '<tr><th>학년·반</th><th>참여 기기</th><th>모듈 이수</th><th>코스 이수</th></tr>' +
+        classKeys.map(function (k) {
+          var c = byClass[k];
+          var nEnter = Object.keys(c.enter).length;
+          var totalActs = nEnter + c.mod + c.course;
+          var label = k.replace('|', ' ') + '반';
+          if (totalActs < 3) return '<tr><td>' + label + '</td><td colspan="3">3건 미만</td></tr>';
+          return '<tr><td>' + label + '</td><td>' + nEnter + '</td><td>' + c.mod + '</td><td>' + c.course + '</td></tr>';
+        }).join('')
+      : '<tr><td class="small" style="font-weight:400;">반 정보를 선택한 참여가 아직 없어요.</td></tr>';
+  }
+
+  /* ──── Content Ranking ──── */
+  function renderContent(events) {
+    var byContent = {};
+    events.forEach(function (e) {
+      if ((e.type === 'check_done' || e.type === 'module_done') && e.contentId) {
+        byContent[e.contentId] = (byContent[e.contentId] || 0) + 1;
+      }
+    });
+    var rank = Object.keys(byContent).sort(function (a, b) { return byContent[b] - byContent[a]; });
+    var maxC = Math.max.apply(null, rank.map(function (k) { return byContent[k]; }).concat([1]));
+    $('contentRank').innerHTML = rank.length
+      ? rank.map(function (k, i) {
+          return '<div class="bar-row"><span class="bl" style="width:130px;font-size:0.76rem;">' +
+            '<span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">' + (i + 1) + '</span>' +
+            (TITLES[k] || k) + '</span>' +
+            '<span class="bt"><span class="bf" style="width:' + (byContent[k] / maxC * 100) + '%;background:var(--coral-deep);"></span></span>' +
+            '<span class="bn">' + byContent[k] + '</span></div>';
+        }).join('')
+      : '<p class="small">아직 완료된 콘텐츠가 없어요.</p>';
+  }
+
+  /* ──── Module Funnel ──── */
+  function renderModuleFunnel(events) {
+    var mods = ['m1', 'm2', 'm3', 'm4', 'm5'];
+    var mCount = {};
+    events.forEach(function (e) {
+      if (e.type === 'module_done' && e.contentId) mCount[e.contentId] = (mCount[e.contentId] || 0) + 1;
+    });
+    var maxM = Math.max.apply(null, mods.map(function (m) { return mCount[m] || 0; }).concat([1]));
+    var html = '';
+    for (var i = 0; i < mods.length; i++) {
+      var m = mods[i];
+      var n = mCount[m] || 0;
+      html += '<div class="bar-row"><span class="bl">' + m.toUpperCase() + '</span>' +
+        '<span class="bt"><span class="bf" style="width:' + (n / maxM * 100) + '%;background:var(--navy-soft);"></span></span>' +
+        '<span class="bn">' + n + '</span></div>';
+      if (i < mods.length - 1) {
+        var nxt = mCount[mods[i + 1]] || 0;
+        var drop = n > 0 ? Math.round((1 - nxt / n) * 100) : 0;
+        if (n > 0 && drop > 0) {
+          html += '<div style="font-size:0.7rem;color:var(--muted);margin:-2px 0 4px 50px;">↓ 이탈 <span style="color:var(--risk);font-weight:700;">' + drop + '%</span></div>';
+        }
+      }
+    }
+    $('moduleFunnel').innerHTML = html;
+  }
+
+  /* ──── Survey ──── */
+  function renderSurvey(surveys) {
+    if (surveys.length < 5) {
+      $('surveyBox').innerHTML = '<p class="small">응답 수집 중이에요 (' + surveys.length + '건). 5건 이상 모이면 집계가 표시됩니다.</p>';
+      return;
+    }
+    var avg1 = avgField(surveys, 'q1');
+    var avg2 = avgField(surveys, 'q2');
+    var q3s = surveys.map(function (s) { return s.q3; }).filter(Boolean);
+    var html =
+      '<div class="likert-row"><span class="lq">학교 예방·대응 신뢰</span>' +
+      '<div class="likert-track"><div class="likert-fill" style="width:' + (avg1 / 5 * 100) + '%"></div></div>' +
+      '<span class="lv">' + avg1 + '</span></div>' +
+      '<div class="likert-row"><span class="lq">자녀 이해에 도움</span>' +
+      '<div class="likert-track"><div class="likert-fill" style="width:' + (avg2 / 5 * 100) + '%"></div></div>' +
+      '<span class="lv">' + avg2 + '</span></div>' +
+      '<p class="small mt8">5점 만점 · ' + surveys.length + '명 응답</p>';
+    if (q3s.length) {
+      html += '<h2 style="font-size:0.9rem;margin-top:14px;font-weight:700;">학교에 바라는 점</h2>' +
+        '<ul style="padding-left:18px;font-size:0.85rem;margin-top:6px;">' +
+        q3s.map(function (t) { return '<li style="margin-bottom:4px;">' + esc(t) + '</li>'; }).join('') + '</ul>';
+    }
+    $('surveyBox').innerHTML = html;
+  }
+
+  /* ──── Certs ──── */
+  var _certs = [];
+  function renderCerts(certs) {
+    _certs = certs;
+    buildCertTable(certs);
+  }
+
+  function buildCertTable(list) {
+    $('certTable').innerHTML = list.length
+      ? '<tr><th>성명</th><th>자녀 학년·반</th><th>이수일</th></tr>' +
+        list.map(function (c) {
+          var gc = (c.childGrade || '') + (c.childClass ? ' ' + c.childClass + '반' : '');
+          return '<tr><td>' + esc(c.parentName || '') + '</td><td>' + gc + '</td><td>' + (c.completedAt || '') + '</td></tr>';
+        }).join('')
+      : '<tr><td class="small" style="font-weight:400;">동의된 이수 기록이 아직 없어요.</td></tr>';
+  }
+
+  $('certSearch').addEventListener('input', function () {
+    var q = this.value.trim();
+    if (!q) { buildCertTable(_certs); return; }
+    var filtered = _certs.filter(function (c) { return (c.parentName || '').indexOf(q) >= 0; });
+    buildCertTable(filtered);
+  });
+
+  /* ──── CSV Export ──── */
+  $('btnCSV').addEventListener('click', function () {
+    if (!_certs.length) { alert('동의된 이수 기록이 없습니다.'); return; }
+    var header = '성명,자녀 학년,자녀 반,이수일\n';
+    var rows = _certs.map(function (c) {
+      return [csvSafe(c.parentName), csvSafe(c.childGrade), csvSafe(c.childClass), csvSafe(c.completedAt)].join(',');
+    }).join('\n');
+    var blob = new Blob(['﻿' + header + rows], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = _code + '_이수자명단.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  /* ──── Insights ──── */
+  function renderInsights(nAll, nAct, nM1, nDone, totalParents, events, surveys, certs) {
+    var insights = [];
+
+    /* 참여율 */
+    if (totalParents > 0) {
+      var rate = Math.round(nAll / totalParents * 100);
+      if (rate >= 70) insights.push({ type: 'positive', text: '참여율 <b>' + rate + '%</b> — 학부모 참여가 매우 활발합니다.' });
+      else if (rate >= 40) insights.push({ type: 'action', text: '참여율 <b>' + rate + '%</b> — e알리미 재발송이나 담임 안내로 추가 참여를 유도해 보세요.' });
+      else if (rate > 0) insights.push({ type: 'warning', text: '참여율 <b>' + rate + '%</b> — 아직 초기 단계입니다. 가정통신문·학급 안내를 통해 링크를 다시 공유해 보세요.' });
+    }
+
+    /* 퍼널 이탈 */
+    if (nAll > 0 && nAct > 0) {
+      var enterToAct = Math.round(nAct / nAll * 100);
+      if (enterToAct < 50) insights.push({ type: 'warning', text: '진입 후 첫 활동 시작률이 <b>' + enterToAct + '%</b>입니다. 홈 화면에서 관심을 끌지 못하는 학부모가 많아요.' });
+    }
+    if (nM1 > 0 && nDone > 0) {
+      var m1ToDone = Math.round(nDone / nM1 * 100);
+      if (m1ToDone >= 70) insights.push({ type: 'positive', text: '코스 시작 후 이수 완료율이 <b>' + m1ToDone + '%</b>로 높습니다. 콘텐츠 품질이 좋은 신호입니다.' });
+      else if (m1ToDone < 40) insights.push({ type: 'warning', text: '코스 시작 후 이수 완료율이 <b>' + m1ToDone + '%</b>로 낮습니다. 모듈 퍼널에서 이탈 지점을 확인하세요.' });
+    }
+
+    /* 모듈 이탈 최대 구간 */
+    var mods = ['m1','m2','m3','m4','m5'];
+    var mCount = {};
+    events.forEach(function (e) { if (e.type === 'module_done' && e.contentId) mCount[e.contentId] = (mCount[e.contentId] || 0) + 1; });
+    var maxDrop = 0, dropFrom = '';
+    for (var i = 0; i < mods.length - 1; i++) {
+      var cur = mCount[mods[i]] || 0;
+      var nxt = mCount[mods[i + 1]] || 0;
+      if (cur > 0) {
+        var drop = Math.round((1 - nxt / cur) * 100);
+        if (drop > maxDrop) { maxDrop = drop; dropFrom = mods[i].toUpperCase() + ' → ' + mods[i + 1].toUpperCase(); }
+      }
+    }
+    if (maxDrop > 30) {
+      insights.push({ type: 'action', text: '<b>' + dropFrom + '</b> 구간에서 이탈이 <b>' + maxDrop + '%</b>로 가장 큽니다. 해당 모듈 내용·분량을 점검해 보세요.' });
+    }
+
+    /* 학년 편중 */
+    var byGrade = {};
+    events.forEach(function (e) {
+      if (e.type !== 'enter' || !e.grade || !e.deviceId) return;
+      byGrade[e.grade] = byGrade[e.grade] || {};
+      byGrade[e.grade][e.deviceId] = true;
+    });
+    var gradeArr = Object.keys(byGrade).map(function (g) { return { g: g, n: Object.keys(byGrade[g]).length }; });
+    if (gradeArr.length >= 2) {
+      gradeArr.sort(function (a, b) { return a.n - b.n; });
+      var lowest = gradeArr[0];
+      var highest = gradeArr[gradeArr.length - 1];
+      if (highest.n > 0 && lowest.n / highest.n < 0.3) {
+        insights.push({ type: 'action', text: '<b>' + lowest.g + '</b> 참여(' + lowest.n + '명)가 가장 적습니다. 해당 학년 담임에게 별도 안내를 부탁해 보세요.' });
+      }
+    }
+
+    /* 이수증 미발급 */
+    if (nDone > 0 && certs.length < nDone * 0.5) {
+      insights.push({ type: 'action', text: '코스 이수자 중 이수증(학교 제공 동의)이 <b>' + Math.round(certs.length / nDone * 100) + '%</b>만 발급됐습니다. 이수증 발급 안내를 강화해 보세요.' });
+    }
+
+    /* 인식조사 */
+    if (surveys.length >= 5) {
+      var a1 = Number(avgField(surveys, 'q1'));
+      if (a1 >= 4.0) insights.push({ type: 'positive', text: '학교 예방·대응 신뢰도가 <b>' + a1 + '점</b>(5점 만점)으로 높습니다.' });
+      else if (a1 < 3.0) insights.push({ type: 'warning', text: '학교 예방·대응 신뢰도가 <b>' + a1 + '점</b>(5점 만점)으로 낮은 편입니다. 학부모 소통 강화를 검토해 보세요.' });
+    }
+
+    /* 데이터 부족 */
+    if (nAll === 0) {
+      insights.push({ type: 'action', text: '아직 참여 데이터가 없습니다. 학교 코드가 포함된 링크를 e알리미로 발송해 주세요.' });
+    }
+
+    $('insightBox').innerHTML = insights.length
+      ? insights.map(function (ins) { return '<div class="insight-card ' + ins.type + '">' + ins.text + '</div>'; }).join('')
+      : '<p class="small">데이터가 더 쌓이면 인사이트가 표시됩니다.</p>';
+  }
+
+  /* ──── Helpers ──── */
+  function objToArr(obj) { return Object.keys(obj || {}).map(function (k) { return obj[k]; }); }
+  function pct(n, d) { return d > 0 ? Math.round(n / d * 100) + '%' : '–'; }
+  function esc(s) { return String(s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function csvSafe(s) { s = String(s || ''); return s.indexOf(',') >= 0 || s.indexOf('"') >= 0 ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  function dateKey(ts) { var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function fmtDateShort(dk) { var p = dk.split('-'); return p[1] + '/' + p[2]; }
+  function avgField(arr, key) {
+    var vals = arr.map(function (s) { return Number(s[key]) || 0; }).filter(Boolean);
+    return vals.length ? (vals.reduce(function (a, b) { return a + b; }, 0) / vals.length).toFixed(2) : '–';
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>의견 남기기 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .likert { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+  .likert button {
+    padding: 12px 2px; min-height: 48px; border: 1.5px solid var(--line); border-radius: 10px;
+    background: var(--card); font-size: 0.75rem; color: var(--muted); transition: all .15s;
+  }
+  .likert button.on { border-color: var(--navy-soft); background: #EEF2F9; color: var(--navy); font-weight: 700; }
+  textarea {
+    width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 12px;
+    font-size: 1rem; font-family: var(--font-kr); resize: none; outline: none; background: var(--card);
+  }
+  textarea:focus { border-color: var(--navy-soft); }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <h1 class="page-title"><span data-icon="clock" style="color:var(--coral-deep);"></span> 마지막으로 30초만!</h1>
+  <p class="page-sub">응답은 <b>완전히 익명</b>이며, 학교에는 전체 평균만 전달됩니다.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>1. 우리 학교의 학교폭력 예방·대응을 신뢰합니다</label>
+      <div class="likert" data-q="1">
+        <button data-v="1">전혀<br>아니다</button><button data-v="2">아니다</button><button data-v="3">보통</button><button data-v="4">그렇다</button><button data-v="5">매우<br>그렇다</button>
+      </div>
+    </div>
+    <div class="field mt16">
+      <label>2. 이 교육이 자녀를 이해하는 데 도움이 되었습니다</label>
+      <div class="likert" data-q="2">
+        <button data-v="1">전혀<br>아니다</button><button data-v="2">아니다</button><button data-v="3">보통</button><button data-v="4">그렇다</button><button data-v="5">매우<br>그렇다</button>
+      </div>
+    </div>
+    <div class="field mt16">
+      <label>3. 학교에 바라는 점 <span style="font-weight:400;color:var(--muted);">(선택, 한 줄)</span></label>
+      <textarea id="q3" rows="2" maxlength="100" placeholder="자유롭게 남겨주세요 (건너뛰어도 괜찮아요)"></textarea>
+    </div>
+    <button class="btn btn-coral mt16" id="btnSubmit" disabled>의견 보내고 이수증 받기</button>
+    <button class="btn btn-ghost mt8" id="btnSkip">건너뛰고 이수증 받기</button>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  if (!PE.requireCourseSession(1)) return;
+
+  /* 코스 미이수 시 목차로 */
+  if (!PE.isCourseDone()) { location.replace('index.html'); return; }
+  /* 이미 응답했으면 이수증으로 */
+  if (localStorage.getItem('pe_survey_done')) { location.replace('cert.html'); return; }
+
+  var ans = { 1: null, 2: null };
+  document.querySelectorAll('.likert').forEach(function (row) {
+    row.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      ans[row.dataset.q] = Number(b.dataset.v);
+      row.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      document.getElementById('btnSubmit').disabled = !(ans[1] && ans[2]);
+    });
+  });
+
+  document.getElementById('btnSubmit').addEventListener('click', function () {
+    this.disabled = true;
+    localStorage.setItem('pe_survey_done', '1');
+    HomeDB.pushSurvey(ans[1], ans[2], document.getElementById('q3').value)
+      .finally(function () { location.href = 'cert.html'; });
+    setTimeout(function () { location.href = 'cert.html'; }, 1500);
+  });
+
+  document.getElementById('btnSkip').addEventListener('click', function () {
+    localStorage.setItem('pe_survey_done', 'skip');
+    location.href = 'cert.html';
+  });
+})();
+</script>
+</body>
+</html>

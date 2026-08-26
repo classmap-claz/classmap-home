@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관계 습관 체크 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <h1 class="page-title"><span data-icon="users" style="color:var(--h-observe);"></span> 우리 아이 관계 습관 체크</h1>
+  <p class="page-sub">평소 관찰한 자녀의 모습을 떠올리며 답해주세요 · 12문항</p>
+
+  <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+    <span><b>이 결과는 부모님만 볼 수 있습니다. 학교에는 전송되지 않습니다.</b><br>응답 내용은 어디에도 저장되지 않아요.</span>
+  </div>
+
+  <div id="levelPick" class="card">
+    <h2 style="font-size:1rem;">자녀의 학교급을 선택해 주세요</h2>
+    <div class="level-select">
+      <button class="level-btn" data-level="elem">
+        <div class="lb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--navy-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <div class="lb-title">초등학생</div>
+        <div class="lb-desc">1~6학년</div>
+      </button>
+      <button class="level-btn" data-level="mid">
+        <div class="lb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--navy-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+        <div class="lb-title">중·고등학생</div>
+        <div class="lb-desc">중1~고3</div>
+      </button>
+    </div>
+  </div>
+  <div class="card hidden" id="checkArea"><div id="scaleMount"></div></div>
+
+  <div id="resultArea" class="hidden">
+    <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+      <span><b>이 결과는 부모님만 볼 수 있습니다. 학교에는 전송되지 않습니다.</b></span>
+    </div>
+    <div class="result-band" id="band">
+      <div class="band-label" id="bandLabel"></div>
+      <div class="band-desc" id="bandDesc"></div>
+    </div>
+    <div class="card" id="focusBox" style="display:none;">
+      <h2 style="font-size:0.98rem;">이런 부분을 살펴봐 주세요</h2>
+      <div id="focusList"></div>
+    </div>
+    <div id="courseInvite" class="card mt16" style="display:none">
+      <h2>학교에서 받은 코드가 있다면</h2>
+      <p class="desc">학교 인증 후 예방교육 코스(30분)를 이수하면 이수증도 발급됩니다.</p>
+      <a href="../course/index.html" class="btn btn-primary btn-sm mt8">코스 시작하기</a>
+    </div>
+    <div class="card">
+      <h2 style="font-size:0.98rem;">다음 걸음</h2>
+      <p class="desc">아이의 관계를 돕는 대화법을 배워보세요.</p>
+      <a class="btn btn-coral mt16" href="../course/m2.html"><span data-icon="book"></span> 모듈2 · 자녀와 대화하는 법 →</a>
+      <a class="btn btn-ghost mt8" href="../index.html">홈으로</a>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  PE.renderSchoolChip();
+
+  var ITEMS_ELEM = [
+    '친구와 있었던 일을 집에서 이야기한다',
+    '마음을 터놓는 친구가 한 명 이상 있다',
+    '친구를 집에 데려오거나, 친구 집에 놀러 간다',
+    '갈등이 생겼을 때 말로 풀어보려고 한다',
+    '친구의 기분을 알아차리고 배려하는 모습이 보인다',
+    '새로운 모임이나 활동에 어울리는 것을 어려워하지 않는다',
+    '싫은 것은 싫다고 자기 의사를 표현한다',
+    '놀림이나 장난에 속상할 때 감정을 표현하거나 도움을 청한다',
+    '놀이 시간에 또래와 함께 어울려 논다',
+    '혼자 있는 시간도 스스로 선택한 듯 편안해 보인다',
+    '친구 관계에서 속상한 일이 있어도 회복하는 편이다',
+    '어려운 일이 생기면 부모가 도와줄 거라고 믿는 것 같다'
+  ];
+  var ITEMS_MID = [
+    '친구와 있었던 일을 집에서 이야기한다',
+    '마음을 터놓는 친구가 한 명 이상 있다',
+    '친구를 집에 데려오거나, 친구 집에 놀러 간다',
+    '갈등이 생겼을 때 말로 풀어보려고 한다',
+    '친구의 기분을 알아차리고 배려하는 모습이 보인다',
+    '새로운 모임이나 활동에 어울리는 것을 어려워하지 않는다',
+    '싫은 것은 싫다고 자기 의사를 표현한다',
+    '놀림이나 장난에 속상할 때 감정을 표현하거나 도움을 청한다',
+    '단체 대화방(단톡)에서 있었던 일을 부모에게 이야기한다',
+    '혼자 있는 시간도 스스로 선택한 듯 편안해 보인다',
+    '친구 관계에서 속상한 일이 있어도 회복하는 편이다',
+    '어려운 일이 생기면 부모가 도와줄 거라고 믿는 것 같다'
+  ];
+  var FOCUS_TIP_ELEM = {
+    0: '학교 이야기가 줄었다면, 캐묻기보다 부모의 하루를 먼저 나눠보세요.',
+    1: '친한 친구의 존재는 가장 든든한 보호막이에요. 친구 이야기에 관심을 보여주세요.',
+    3: '갈등을 말로 푸는 연습은 집에서 시작됩니다. 가족 간 대화 방식을 돌아봐 주세요.',
+    6: '거절 연습이 필요할 수 있어요. "싫으면 싫다고 해도 괜찮아"를 알려주세요.',
+    7: '도움 청하기는 약함이 아니라 기술이에요. 도움을 청했을 때 반갑게 반응해 주세요.',
+    8: '또래와 어울리는 시간이 줄었다면, 방과 후 활동이나 놀이 약속을 도와주세요.',
+    11: '"무슨 일이 있어도 네 편"이라는 믿음이 모든 대화의 바탕이 됩니다.'
+  };
+  var FOCUS_TIP_MID = {
+    0: '학교 이야기가 줄었다면, 캐묻기보다 부모의 하루를 먼저 나눠보세요.',
+    1: '친한 친구의 존재는 가장 든든한 보호막이에요. 친구 이야기에 관심을 보여주세요.',
+    3: '갈등을 말로 푸는 연습은 집에서 시작됩니다. 가족 간 대화 방식을 돌아봐 주세요.',
+    6: '거절 연습이 필요할 수 있어요. "싫으면 싫다고 해도 괜찮아"를 알려주세요.',
+    7: '도움 청하기는 약함이 아니라 기술이에요. 도움을 청했을 때 반갑게 반응해 주세요.',
+    8: '온라인 생활을 자연스럽게 나눌 수 있는 분위기가 사이버폭력의 가장 좋은 예방입니다.',
+    11: '"무슨 일이 있어도 네 편"이라는 믿음이 모든 대화의 바탕이 됩니다.'
+  };
+
+  function startCheck(level) {
+    var ITEMS = level === 'elem' ? ITEMS_ELEM : ITEMS_MID;
+    var FOCUS_TIP = level === 'elem' ? FOCUS_TIP_ELEM : FOCUS_TIP_MID;
+    var label = level === 'elem' ? '초등학생' : '중·고등학생';
+    document.querySelector('.page-sub').textContent = label + ' · 평소 관찰한 자녀의 모습을 떠올리며 답해주세요 · 12문항';
+    document.getElementById('levelPick').classList.add('hidden');
+    document.getElementById('checkArea').classList.remove('hidden');
+
+    ScaleCheck({
+      mount: '#scaleMount',
+      items: ITEMS,
+      labels: ['그렇지 않다', '가끔 그렇다', '자주 그렇다', '늘 그렇다'],
+      submitText: '결과 보기',
+      onResult: function (answers, total) {
+        var tier = total >= 24 ? 'ok' : total >= 13 ? 'warn' : 'risk';
+        var MAP = {
+          ok:   { label: '관계의 힘이 자라고 있어요', desc: '아이가 관계 속에서 자기 자리를 잘 만들어 가고 있어요. 지금처럼 아이의 이야기에 귀 기울여 주세요.' },
+          warn: { label: '조금 더 지켜봐 주세요', desc: '잘하고 있는 부분과 도움이 필요한 부분이 함께 보여요. 아래 항목을 중심으로 천천히 살펴봐 주세요.' },
+          risk: { label: '따뜻한 관심이 필요해요', desc: '아이가 관계에서 힘을 얻지 못하고 있을 수 있어요. 다그치지 말고, 편안한 대화의 기회를 자주 만들어 주세요.' }
+        };
+        document.getElementById('band').className = 'result-band ' + tier;
+        document.getElementById('bandLabel').textContent = MAP[tier].label;
+        document.getElementById('bandDesc').textContent = MAP[tier].desc;
+        var tips = [];
+        Object.keys(FOCUS_TIP).forEach(function (k) {
+          if (answers[k] <= 1) tips.push('<div class="checkpoint" style="margin:8px 0;">' + FOCUS_TIP[k] + '</div>');
+        });
+        if (tips.length && tier !== 'ok') {
+          document.getElementById('focusList').innerHTML = tips.slice(0, 3).join('');
+          document.getElementById('focusBox').style.display = 'block';
+        }
+        document.getElementById('checkArea').classList.add('hidden');
+        document.getElementById('resultArea').classList.remove('hidden');
+        window.scrollTo(0, 0);
+        PE.markDone('social');
+        if (HomeDB.hasSchool()) HomeDB.logCheckDone('social');
+        if (!PE.hasSession()) document.getElementById('courseInvite').style.display = '';
+      }
+    });
+  }
+
+  var urlLevel = new URLSearchParams(location.search).get('level');
+  if (urlLevel === 'elem' || urlLevel === 'mid') {
+    startCheck(urlLevel);
+  } else {
+    document.querySelectorAll('.level-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { startCheck(btn.dataset.level); });
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학교폭력 징후 체크 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <h1 class="page-title"><span data-icon="search" style="color:var(--navy-soft);"></span> 학교폭력 징후 체크</h1>
+  <p class="page-sub">최근 한 달간 자녀의 모습을 떠올리며 답해주세요 · 12문항</p>
+
+  <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+    <span><b>이 결과는 부모님만 볼 수 있습니다. 학교에는 전송되지 않습니다.</b><br>응답 내용은 어디에도 저장되지 않아요.</span>
+  </div>
+
+  <div id="levelPick" class="card">
+    <h2 style="font-size:1rem;">자녀의 학교급을 선택해 주세요</h2>
+    <div class="level-select">
+      <button class="level-btn" data-level="elem">
+        <div class="lb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--navy-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <div class="lb-title">초등학생</div>
+        <div class="lb-desc">1~6학년</div>
+      </button>
+      <button class="level-btn" data-level="mid">
+        <div class="lb-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--navy-soft)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+        <div class="lb-title">중·고등학생</div>
+        <div class="lb-desc">중1~고3</div>
+      </button>
+    </div>
+  </div>
+  <div class="card hidden" id="checkArea"><div id="scaleMount"></div></div>
+
+  <!-- 결과 -->
+  <div id="resultArea" class="hidden">
+    <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+      <span><b>이 결과는 부모님만 볼 수 있습니다. 학교에는 전송되지 않습니다.</b></span>
+    </div>
+    <div class="result-band" id="band">
+      <div class="band-label" id="bandLabel"></div>
+      <div class="band-desc" id="bandDesc"></div>
+    </div>
+    <div class="card" id="riskBox" style="display:none;border-color:var(--warn-line);">
+      <h2 style="font-size:0.98rem;">함께 확인해 주세요</h2>
+      <p class="desc">지금 필요한 것은 단정이 아니라 대화입니다. 아래 자료가 도움이 됩니다.</p>
+      <a class="btn btn-primary btn-sm mt16" href="../guide/index.html" style="width:100%;"><span data-icon="compass"></span> 상황별 대응 가이드 보기</a>
+      <p class="small mt8 tc">전문 상담: <b>117</b> (학교폭력 신고·상담, 24시간) · 청소년 상담 <b>1388</b></p>
+    </div>
+    <div id="courseInvite" class="card mt16" style="display:none">
+      <h2>학교에서 받은 코드가 있다면</h2>
+      <p class="desc">학교 인증 후 예방교육 코스(30분)를 이수하면 이수증도 발급됩니다.</p>
+      <a href="../course/index.html" class="btn btn-primary btn-sm mt8">코스 시작하기</a>
+    </div>
+    <div class="card">
+      <h2 style="font-size:0.98rem;">다음 걸음</h2>
+      <p class="desc">신호를 읽는 눈을 기르는 5분 교육이 준비되어 있어요.</p>
+      <a class="btn btn-coral mt16" href="../course/m1.html"><span data-icon="book"></span> 모듈1 · 징후 알아차리기 →</a>
+      <a class="btn btn-ghost mt8" href="../index.html">홈으로</a>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  PE.renderSchoolChip();
+
+  var ITEMS_ELEM = [
+    '학용품이나 소지품이 자주 없어지거나 망가져 온다',
+    '몸에 상처나 멍이 있는데 이유를 얼버무린다',
+    '학교에 가기 싫어하거나, 아침마다 아프다는 말이 잦아졌다',
+    '용돈을 갑자기 더 달라고 하거나, 돈 쓰는 곳을 숨긴다',
+    '잠들기 어려워하거나 악몽을 꾸는 날이 늘었다',
+    '식욕이 줄거나 갑자기 폭식하는 등 식습관이 달라졌다',
+    '친구 이야기를 하지 않게 되었고, 물어보면 피한다',
+    '학교 행사나 모둠 활동을 이유 없이 빠지려 한다',
+    '짜증이나 화가 부쩍 늘고 사소한 일에 예민해졌다',
+    '특정 친구 이름이 나오면 표정이 달라진다',
+    '혼자 놀거나 쉬는 시간에 교실에 남아 있는 날이 많다',
+    '좋아하던 놀이나 활동에 흥미를 잃었다'
+  ];
+  var ITEMS_MID = [
+    '소지품이 자주 없어지거나 망가져 온다',
+    '몸에 상처나 멍이 있는데 이유를 얼버무린다',
+    '학교에 가기 싫어하거나, 아침마다 아프다는 말이 잦아졌다',
+    '스마트폰 알림을 확인한 뒤 표정이 굳거나 불안해한다',
+    '용돈을 갑자기 더 달라고 하거나, 돈 쓰는 곳을 숨긴다',
+    '잠들기 어려워하거나 악몽을 꾸는 날이 늘었다',
+    '식욕이 줄거나 갑자기 폭식하는 등 식습관이 달라졌다',
+    '친구 이야기를 하지 않게 되었고, 물어보면 피한다',
+    '단체 대화방(단톡)을 갑자기 나가거나 대화를 숨긴다',
+    '짜증이나 화가 부쩍 늘고 사소한 일에 예민해졌다',
+    '특정 친구 이름이 나오면 표정이 달라진다',
+    '다른 친구를 깎아내리거나 험담하는 말이 늘었다'
+  ];
+  var CRITICAL_ELEM = [0, 1, 3];
+  var CRITICAL_MID  = [0, 1, 3, 4];
+
+  function startCheck(level) {
+    var ITEMS = level === 'elem' ? ITEMS_ELEM : ITEMS_MID;
+    var CRITICAL = level === 'elem' ? CRITICAL_ELEM : CRITICAL_MID;
+    var label = level === 'elem' ? '초등학생' : '중·고등학생';
+    document.querySelector('.page-sub').textContent = label + ' · 최근 한 달간 자녀의 모습을 떠올리며 답해주세요 · 12문항';
+    document.getElementById('levelPick').classList.add('hidden');
+    document.getElementById('checkArea').classList.remove('hidden');
+
+    ScaleCheck({
+      mount: '#scaleMount',
+      items: ITEMS,
+      labels: ['전혀 없다', '가끔 있다', '자주 있다', '거의 항상'],
+      submitText: '결과 보기',
+      onResult: function (answers, total) {
+        var tier = total <= 6 ? 'ok' : total <= 14 ? 'warn' : 'risk';
+        if (tier === 'ok' && CRITICAL.some(function (i) { return answers[i] === 3; })) tier = 'warn';
+        var MAP = {
+          ok:   { label: '안심 단계예요', desc: '지금은 뚜렷한 신호가 보이지 않아요. 다만 아이의 상태는 변하기 때문에, 평소의 관심과 대화가 가장 좋은 예방입니다.' },
+          warn: { label: '관심이 필요해요', desc: '몇 가지 변화가 보여요. 학교폭력이라고 단정할 수는 없지만, 편안한 순간에 아이와 대화로 확인해 볼 신호가 있습니다.' },
+          risk: { label: '적극적으로 확인해 주세요', desc: '여러 신호가 함께 나타나고 있어요. 아이와 차분히 대화해 보시고, 필요하면 담임 선생님·상담 채널과 상의해 주세요. 단정보다 확인이 먼저입니다.' }
+        };
+        document.getElementById('band').className = 'result-band ' + tier;
+        document.getElementById('bandLabel').textContent = MAP[tier].label;
+        document.getElementById('bandDesc').textContent = MAP[tier].desc;
+        if (tier !== 'ok') document.getElementById('riskBox').style.display = 'block';
+        document.getElementById('checkArea').classList.add('hidden');
+        document.getElementById('resultArea').classList.remove('hidden');
+        window.scrollTo(0, 0);
+        PE.markDone('signs');
+        if (HomeDB.hasSchool()) HomeDB.logCheckDone('signs');
+        if (!PE.hasSession()) document.getElementById('courseInvite').style.display = '';
+      }
+    });
+  }
+
+  var urlLevel = new URLSearchParams(location.search).get('level');
+  if (urlLevel === 'elem' || urlLevel === 'mid') {
+    startCheck(urlLevel);
+  } else {
+    document.querySelectorAll('.level-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { startCheck(btn.dataset.level); });
+    });
+  }
+})();
+</script>
+</body>
+</html>

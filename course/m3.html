@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모듈3 사이버폭력 이해하기 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <p class="step-indicator">MODULE 3 / 5</p>
+  <h1 class="page-title">사이버폭력 이해하기</h1>
+  <p class="page-sub">단톡방·SNS에서 벌어지는 일 · 약 6분</p>
+
+  <div class="module-body">
+    <p>요즘 아이들의 괴롭힘은 교실보다 <b>화면 속</b>에서 더 많이 일어납니다. 부모 눈에는 그냥 휴대폰을 보는 모습이지만, 그 안에서 아이가 어떤 일을 겪고 있는지는 보이지 않습니다.</p>
+
+    <h3>단톡방·SNS에서 벌어지는 일들</h3>
+    <ul>
+      <li><b>단체방 욕설·저격</b> — 단톡방에 초대해 여럿이 한 명을 비난하거나, 저격성 글·짤을 올림</li>
+      <li><b>방폭</b> — 대화방에서 한 명만 남기고 모두 나가버리거나, 반복적으로 초대·강퇴를 되풀이함</li>
+      <li><b>따돌림의 온라인 연장</b> — 반 단톡방에 일부러 초대하지 않기, 메시지 무시하기</li>
+      <li><b>사진·영상 유포</b> — 굴욕적인 사진이나 합성물을 퍼뜨림</li>
+      <li><b>게임 속 괴롭힘</b> — 게임에서 욕설·배제, 아이템·계정 요구</li>
+      <li><b>금전 요구</b> — 기프티콘·게임머니를 요구하는 일도 있습니다</li>
+    </ul>
+
+    <h3>왜 더 힘들까요</h3>
+    <ul>
+      <li><b>24시간</b> — 집에 와도 끝나지 않습니다. 밤에도 알림이 울립니다</li>
+      <li><b>확산</b> — 캡처 한 번으로 순식간에 퍼지고, 완전히 지우기 어렵습니다</li>
+      <li><b>비가시성</b> — 어른 눈에 잘 띄지 않아 발견이 늦어집니다</li>
+    </ul>
+    <p class="small">모듈 1에서 본 "스마트폰 알림을 확인한 뒤 표정이 굳는다"는 신호가 여기에 해당합니다.</p>
+
+    <h3>가정에서 미리 할 수 있는 일</h3>
+    <ul>
+      <li>스마트폰 사용 규칙은 <b>아이와 함께</b> 정하기 — 일방적 통제는 숨기게 만들 뿐입니다</li>
+      <li>"이상한 메시지를 받으면 언제든 보여줘도 혼나지 않는다"는 원칙을 미리 약속하기</li>
+      <li>아이의 온라인 생활(자주 하는 앱·게임)에 평소에 관심 갖기 — 위기 때만 들여다보면 늦습니다</li>
+    </ul>
+
+    <div class="checkpoint"><span data-icon="camera" style="color:#B7791F;"></span> <b>일이 벌어졌다면 — 증거 보존이 먼저입니다.</b><br>
+    ① 화면을 <b>캡처</b>하세요 (대화방 이름·날짜·상대가 보이게)<br>
+    ② 아이가 수치심에 <b>바로 지우고 싶어 해도</b>, 지우기 전에 보존이 필요함을 설명해 주세요<br>
+    ③ 그다음 담임 선생님 또는 117(학교폭력 신고·상담)로 상담하세요</div>
+  </div>
+
+  <div class="quiz-box" id="quiz"></div>
+
+  <div class="card hidden" id="doneBox" style="border-color:var(--ok-line);background:var(--ok-bg);">
+    <h2 style="color:var(--ok);"><span data-icon="check"></span> 모듈 3을 마쳤어요</h2>
+    <a class="btn btn-primary mt16" href="m4.html">다음 모듈 — 사안처리 절차 이해</a>
+    <a class="btn btn-ghost mt8" href="index.html">코스 목차로</a>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  if (!PE.requireCourseSession(1)) return;
+
+  /* 이미 이수한 모듈이면 다음 버튼을 바로 표시 (재방문 시 진행 막힘 방지) */
+  if (PE.isDone('m3')) {
+    document.getElementById('doneBox').classList.remove('hidden');
+    var nb = document.createElement('div');
+    nb.className = 'privacy-note';
+    nb.innerHTML = (window.PEIcon ? PEIcon('check', 'ico') : '') +
+      '<span><b>이미 이수한 모듈이에요.</b> 다시 읽어봐도 좋아요. <a href="#doneBox" style="font-weight:700;">다음으로 넘어가기 ↓</a></span>';
+    var sub = document.querySelector('.page-sub');
+    sub.parentNode.insertBefore(nb, sub.nextSibling);
+  }
+
+  ModuleQuiz({
+    mount: '#quiz',
+    questions: [
+      { q: '사이버폭력이 겪는 아이에게 특히 힘든 이유가 아닌 것은?',
+        options: ['집에 와도 24시간 이어진다', '캡처로 순식간에 퍼진다', '어른 눈에 잘 띄어 금방 발견된다'],
+        answer: 2, explain: '사이버폭력은 오히려 어른 눈에 잘 띄지 않아 발견이 늦어지는 것이 특징입니다.' },
+      { q: '아이가 단톡방에서 괴롭힘 메시지를 받았을 때 가장 먼저 할 일은?',
+        options: ['불쾌한 대화방을 즉시 삭제하고 잊게 한다', '날짜·상대가 보이게 화면을 캡처해 증거를 보존한다', '그 대화방에 부모가 직접 들어가 항의한다'],
+        answer: 1, explain: '삭제하면 이후 상담·절차에서 상황을 확인하기 어려워집니다. 보존이 먼저예요.' },
+      { q: '스마트폰 사용 규칙을 정하는 바람직한 방법은?',
+        options: ['부모가 정하고 통보한다', '아이와 함께 의논해 정한다', '규칙 없이 자유롭게 둔다'],
+        answer: 1, explain: '일방적 통제는 아이가 온라인 생활을 숨기게 만듭니다. 함께 정한 규칙이 오래갑니다.' }
+    ],
+    onComplete: function () {
+      PE.markDone('m3');
+      HomeDB.logModuleDone('m3');
+      if (PE.isCourseDone()) HomeDB.logCourseDone();
+      var box = document.getElementById('doneBox');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

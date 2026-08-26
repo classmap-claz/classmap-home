@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학부모 가이드 — ClassMap HOME</title>
+  <meta name="description" content="학교폭력 예방, 자녀 또래관계, 부모 소통법. 교육심리 연구에 기반한 학부모 가이드.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <div class="wrap">
+    <h1 class="page-title">학부모 가이드</h1>
+    <p class="page-sub">학교폭력 예방과 자녀 또래관계에 대해 부모가 알아야 할 것들</p>
+
+    <div id="blogList" class="blog-grid"></div>
+    <p class="small tc mt24" id="emptyMsg" style="display:none">아직 등록된 글이 없습니다.</p>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script>
+    HomeNav.render(1);
+    HomeNav.renderFooter(1);
+
+    fetch('posts.json')
+      .then(function (r) { return r.json(); })
+      .then(function (posts) {
+        var list = document.getElementById('blogList');
+        if (!posts.length) {
+          document.getElementById('emptyMsg').style.display = '';
+          return;
+        }
+        list.innerHTML = posts.map(function (p) {
+          var thumbHtml = p.thumb
+            ? '<div class="bc-thumb"><img src="' + p.thumb + '" alt="' + p.title + '" loading="lazy"></div>'
+            : '';
+          return '<a href="' + p.slug + '.html" class="blog-card-v2">' +
+            thumbHtml +
+            '<div class="bc-info">' +
+              '<span class="bc-tag">' + p.tag + '</span>' +
+              '<div class="bc-title">' + p.title + '</div>' +
+              '<div class="bc-summary">' + p.summary + '</div>' +
+              '<div class="bc-date">' + p.date + '</div>' +
+            '</div>' +
+          '</a>';
+        }).join('');
+      })
+      .catch(function () {
+        document.getElementById('emptyMsg').style.display = '';
+      });
+  </script>
+</body>
+</html>

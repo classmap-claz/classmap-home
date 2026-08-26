@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이수증 발급 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .cert-sheet {
+    width: 420px; margin: 0 auto; background: #FFFDF8;
+    border: 3px solid #B8860B; border-radius: 0;
+    padding: 14px; text-align: center; position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    aspect-ratio: 210 / 297;
+  }
+  .cert-inner {
+    border: 1.5px solid #D4A853; position: relative;
+    height: 100%; display: flex; flex-direction: column; align-items: center;
+    padding: 18px 30px 20px;
+  }
+  .cert-corner {
+    position: absolute; width: 36px; height: 36px; pointer-events: none;
+    color: #B8860B;
+  }
+  .cert-corner svg { width: 100%; height: 100%; }
+  .cert-corner.tl { top: -2px; left: -2px; }
+  .cert-corner.tr { top: -2px; right: -2px; transform: scaleX(-1); }
+  .cert-corner.bl { bottom: -2px; left: -2px; transform: scaleY(-1); }
+  .cert-corner.br { bottom: -2px; right: -2px; transform: scale(-1); }
+  .cert-serial {
+    font-family: var(--font-en); font-size: 0.72rem; color: #999;
+    letter-spacing: 0.5px; align-self: flex-start;
+  }
+  .cert-spacer { flex: 1; min-height: 4px; max-height: 20px; }
+  .cert-laurel { margin: 6px 0 4px; }
+  .cert-laurel svg { width: 56px; height: auto; }
+  .cert-title {
+    font-size: 1.6rem; font-weight: 800; color: var(--navy-deep);
+    letter-spacing: 12px; margin: 4px 0 6px; padding-left: 12px;
+  }
+  .cert-divider {
+    width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent);
+    margin: 10px auto 18px; border: none;
+  }
+  .cert-info {
+    text-align: left; margin: 0 auto 8px; font-size: 0.78rem;
+    line-height: 2; color: var(--ink); width: 100%; max-width: 300px;
+  }
+  .cert-info .ci-row {
+    display: flex; gap: 0;
+    border-bottom: 1px dotted #E8E0D0; padding: 2px 0;
+  }
+  .cert-info .ci-row:last-child { border-bottom: none; }
+  .cert-info .ci-label {
+    flex: none; width: 68px; font-weight: 700; color: var(--navy-deep);
+    letter-spacing: 2px; text-align: justify; text-align-last: justify;
+    font-size: 0.75rem;
+  }
+  .cert-info .ci-colon { flex: none; width: 20px; text-align: center; color: #999; }
+  .cert-info .ci-val { flex: 1; font-size: 0.78rem; }
+  .cert-body {
+    font-size: 0.76rem; line-height: 1.9; color: var(--ink);
+    margin: 10px 0; text-align: left; padding: 0 6px; width: 100%;
+  }
+  .cert-date {
+    font-size: 0.88rem; font-weight: 700; color: var(--navy-deep);
+    letter-spacing: 2px;
+  }
+  .cert-divider2 {
+    width: 100%; height: 1px; background: #E8E0D0;
+    margin: 0; border: none;
+  }
+  .cert-issuer-row {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    margin-top: 12px;
+  }
+  .cert-issuer-name {
+    font-size: 1rem; font-weight: 800; color: var(--navy-deep);
+    letter-spacing: 2px;
+  }
+  .cert-seal {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 2px solid var(--coral-deep); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 0.56rem; font-weight: 700; color: var(--coral-deep);
+    background: rgba(242,107,84,.04);
+  }
+  .cert-footer {
+    font-family: var(--font-en); font-size: 0.68rem; color: #BBB;
+    margin-top: 4px; line-height: 1.4; letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <!-- STEP A: 정보 입력 -->
+  <div id="formStep">
+    <h1 class="page-title"><span data-icon="award" style="color:var(--h-mind);"></span> 이수증 발급</h1>
+    <p class="page-sub">이수증 발급 및 학교 제출을 위해 성함이 필요합니다.</p>
+
+    <div class="card">
+      <div class="field">
+        <label for="parentName">학부모 성함</label>
+        <input type="text" id="parentName" placeholder="예: 김민지" maxlength="20" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>자녀 학년·반</label>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;position:relative;">
+            <input type="number" id="childGrade" placeholder="예: 3" min="1" max="6" autocomplete="off" style="width:100%;padding-right:40px;">
+            <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:var(--muted);pointer-events:none;">학년</span>
+          </div>
+          <div style="flex:1;position:relative;">
+            <input type="number" id="childClass" placeholder="예: 4" min="1" max="20" autocomplete="off" style="width:100%;padding-right:30px;">
+            <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:0.85rem;font-weight:600;color:var(--muted);pointer-events:none;">반</span>
+          </div>
+        </div>
+      </div>
+      <div class="field" id="schoolField" style="display:none;">
+        <label for="schoolName">학교명</label>
+        <input type="text" id="schoolName" placeholder="예: OO초등학교" maxlength="30" autocomplete="off">
+        <p class="hint">이수증에 표기될 학교명을 입력해 주세요.</p>
+      </div>
+      <div class="field">
+        <label for="childName">자녀 이름 <span style="font-weight:400;color:var(--muted);">(선택)</span></label>
+        <input type="text" id="childName" placeholder="이수증에 함께 표기됩니다" maxlength="20" autocomplete="off">
+      </div>
+
+      <div class="consent-row">
+        <input type="checkbox" id="consent">
+        <label for="consent"><b>이수 사실 학교 제공 동의</b> — 이수 사실(성명, 자녀 학년·반, 이수일)을 소속 학교에 제공하는 데 동의합니다. 학교 인정 이수 처리를 위해 필요합니다.</label>
+      </div>
+      <p class="small" style="margin-bottom:12px;">동의하지 않아도 이수증은 발급되지만, 학교에서 예방교육 근거자료로 활용할 수 없습니다.</p>
+
+      <button class="btn btn-coral" id="btnIssue" disabled>이수증 발급하기</button>
+    </div>
+    <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+      <span>점검 결과나 학습 내용은 학교에 전송되지 않으며, 동의 시 <b>이수 사실만</b> 전달됩니다.</span>
+    </div>
+  </div>
+
+  <!-- STEP B: 이수증 -->
+  <div id="certStep" class="hidden">
+    <h1 class="page-title tc"><span data-icon="sparkle" style="color:var(--h-mind);"></span> 수료를 축하드립니다</h1>
+    <p class="page-sub tc">이미지를 저장해 보관하거나 학교에 제출하세요.</p>
+
+    <div class="cert-sheet" id="certSheet">
+      <div class="cert-inner">
+        <div class="cert-corner tl"><svg viewBox="0 0 36 36"><path d="M2 34 Q2 2 34 2" fill="none" stroke="#B8860B" stroke-width="2.5" stroke-linecap="round"/><path d="M8 28 Q8 8 28 8" fill="none" stroke="#D4A853" stroke-width="1" stroke-linecap="round"/><circle cx="5" cy="5" r="2" fill="#D4A853"/></svg></div>
+        <div class="cert-corner tr"><svg viewBox="0 0 36 36"><path d="M2 34 Q2 2 34 2" fill="none" stroke="#B8860B" stroke-width="2.5" stroke-linecap="round"/><path d="M8 28 Q8 8 28 8" fill="none" stroke="#D4A853" stroke-width="1" stroke-linecap="round"/><circle cx="5" cy="5" r="2" fill="#D4A853"/></svg></div>
+        <div class="cert-corner bl"><svg viewBox="0 0 36 36"><path d="M2 34 Q2 2 34 2" fill="none" stroke="#B8860B" stroke-width="2.5" stroke-linecap="round"/><path d="M8 28 Q8 8 28 8" fill="none" stroke="#D4A853" stroke-width="1" stroke-linecap="round"/><circle cx="5" cy="5" r="2" fill="#D4A853"/></svg></div>
+        <div class="cert-corner br"><svg viewBox="0 0 36 36"><path d="M2 34 Q2 2 34 2" fill="none" stroke="#B8860B" stroke-width="2.5" stroke-linecap="round"/><path d="M8 28 Q8 8 28 8" fill="none" stroke="#D4A853" stroke-width="1" stroke-linecap="round"/><circle cx="5" cy="5" r="2" fill="#D4A853"/></svg></div>
+
+        <div class="cert-serial" id="certSerial"></div>
+        <div class="cert-spacer"></div>
+
+        <div class="cert-laurel">
+          <svg viewBox="0 0 80 40" fill="none">
+            <path d="M40 38 C30 30 10 28 6 14 C10 18 18 20 24 18 C18 16 12 10 10 4 C14 10 22 14 28 12 C22 10 18 4 18 0 C22 6 30 10 34 10 C30 8 28 2 30 0 C32 4 36 8 40 10" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M40 38 C50 30 70 28 74 14 C70 18 62 20 56 18 C62 16 68 10 70 4 C66 10 58 14 52 12 C58 10 62 4 62 0 C58 6 50 10 46 10 C50 8 52 2 50 0 C48 4 44 8 40 10" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="cert-title">이 수 증</div>
+        <hr class="cert-divider">
+
+        <div class="cert-info">
+          <div class="ci-row"><span class="ci-label">과 정 명</span><span class="ci-colon">:</span><span class="ci-val">학부모 학교폭력 예방교육</span></div>
+          <div class="ci-row"><span class="ci-label">성 명</span><span class="ci-colon">:</span><span class="ci-val" id="certName"></span></div>
+          <div class="ci-row"><span class="ci-label">자 녀</span><span class="ci-colon">:</span><span class="ci-val" id="certChild"></span></div>
+          <div class="ci-row"><span class="ci-label">소 속</span><span class="ci-colon">:</span><span class="ci-val" id="certSchool"></span></div>
+        </div>
+
+        <div class="cert-body">
+          위 학부모님은 <b id="certSchool2"></b>에서 안내한 "<b>학부모 학교폭력 예방교육</b>" 과정(5개 모듈)을 성실히 이수하였기에 이 증서를 드립니다.
+        </div>
+
+        <div class="cert-spacer"></div>
+        <div class="cert-date" id="certDate"></div>
+        <div class="cert-spacer"></div>
+        <hr class="cert-divider2">
+
+        <div class="cert-issuer-row">
+          <span class="cert-issuer-name">주식회사 클래즈 대표</span>
+          <span class="cert-seal">직인생략</span>
+        </div>
+        <div class="cert-footer">ClassMap HOME · home.classmapcare.kr</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary mt24" id="btnSave"><span data-icon="download"></span> 이수증 이미지 저장</button>
+    <a class="btn btn-ghost mt8" href="../index.html">홈으로</a>
+    <p class="small tc mt8" id="saveMsg"></p>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  if (!PE.requireCourseSession(1)) return;
+  if (!PE.isCourseDone()) { location.replace('index.html'); return; }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var peGrade = PE.grade();
+  var peClass = PE.classNo();
+  if (peGrade) {
+    var gNum = peGrade.replace(/[^0-9]/g, '');
+    if (gNum) $('childGrade').value = gNum;
+  }
+  if (peClass && peClass !== 'none') {
+    var cNum = peClass.replace(/[^0-9]/g, '');
+    if (cNum) $('childClass').value = cNum;
+  }
+
+  var isDemo = PE.school() === 'DEMO' || PE.schoolName() === '체험 학교';
+  if (isDemo) {
+    $('schoolField').style.display = '';
+    $('schoolName').addEventListener('input', checkReady);
+  }
+
+  function checkReady() {
+    var ready = $('parentName').value.trim() && $('childGrade').value.trim() && $('childClass').value.trim();
+    if (isDemo) ready = ready && $('schoolName').value.trim();
+    $('btnIssue').disabled = !ready;
+  }
+  $('parentName').addEventListener('input', checkReady);
+  $('childGrade').addEventListener('input', checkReady);
+  $('childClass').addEventListener('input', checkReady);
+
+  function serial() {
+    var d = PE.courseDoneDate() || new Date();
+    var ymd = String(d.getFullYear()) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    var seq = String(Math.floor(Math.random() * 900) + 100);
+    return 'HOME-' + PE.school() + '-' + ymd + '-' + seq;
+  }
+
+  $('btnIssue').addEventListener('click', function () {
+    var name = $('parentName').value.trim();
+    if (!name) return;
+    this.disabled = true;
+    var consent = $('consent').checked;
+    var doneDate = PE.fmtDate(PE.courseDoneDate() || new Date());
+    var sn = localStorage.getItem('pe_cert_serial') || serial();
+    localStorage.setItem('pe_cert_serial', sn);
+
+    /* 이수증 채우기 */
+    $('certSerial').textContent = 'No. ' + sn;
+    $('certName').textContent = name;
+    var grade = $('childGrade').value.trim();
+    var cls = $('childClass').value.trim();
+    var gcText = grade + '학년 ' + cls + '반';
+    $('certChild').textContent = $('childName').value.trim() || '-';
+    var school = isDemo && $('schoolName').value.trim() ? $('schoolName').value.trim() : PE.schoolName();
+    $('certSchool').textContent = school + ' ' + gcText;
+    $('certSchool2').textContent = school;
+    $('certDate').textContent = doneDate;
+
+    /* 기록: 동의 시에만 실명 기록 (deviceId 미포함), 발급 건수는 익명 집계 */
+    if (!localStorage.getItem('pe_cert_logged')) {
+      localStorage.setItem('pe_cert_logged', '1');
+      HomeDB.logCert({
+        parentName: name,
+        childGrade: grade,
+        childClass: cls,
+        childName: $('childName').value.trim(),
+        completedAt: doneDate
+      }, consent);
+    }
+
+    $('formStep').classList.add('hidden');
+    $('certStep').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  $('btnSave').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    html2canvas($('certSheet'), { scale: 2, backgroundColor: '#ffffff' }).then(function (canvas) {
+      var a = document.createElement('a');
+      a.download = 'ClassMapHOME_이수증.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      $('saveMsg').textContent = '저장되었어요. 사진첩(다운로드)에서 확인하세요.';
+      btn.disabled = false;
+    }).catch(function () {
+      $('saveMsg').textContent = '저장에 실패했어요. 화면을 캡처해 주세요.';
+      btn.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

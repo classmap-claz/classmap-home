@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모듈5 가해 관련 통보를 받았을 때 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <p class="step-indicator">MODULE 5 / 5</p>
+  <h1 class="page-title">우리 아이가 '가해 관련자'로<br>통보받았을 때</h1>
+  <p class="page-sub">침착하게, 아이 곁에서 · 약 7분</p>
+
+  <div class="module-body">
+    <p>학교에서 "자녀가 학교폭력 사안에 관련되었다"는 연락을 받으면, 어떤 부모라도 심장이 내려앉습니다. 화가 나기도 하고("우리 애가 그럴 리 없어"), 수치심이 밀려오기도 합니다. <b>그 첫 감정으로 움직이지 않는 것</b>이 이 모듈의 전부입니다.</p>
+
+    <h3>① 먼저 숨 고르기</h3>
+    <ul>
+      <li>'관련자 통보'는 <b>유죄 판정이 아닙니다.</b> 사실관계를 확인하는 절차가 시작되었다는 뜻입니다</li>
+      <li>흥분한 상태로 학교·상대 부모에게 연락하면 일이 커집니다. 하루의 냉각 시간을 가지세요</li>
+      <li>아이 앞에서 "네가 내 얼굴에 먹칠을 했다" 같은 말은 아이를 거짓말과 은폐로 몰아갑니다</li>
+    </ul>
+
+    <h3>② 아이의 이야기를 끝까지</h3>
+    <ul>
+      <li>추궁("너 진짜 그랬어?")이 아니라 <b>재구성</b>("그날 무슨 일이 있었는지 처음부터 말해줄래?")으로</li>
+      <li>변명처럼 들리는 말도 끊지 말고 끝까지 들으세요 — 맥락 속에 사실이 있습니다</li>
+      <li>들은 내용을 시간순으로 <b>기록</b>해 두세요. 조사 과정에서 아이를 도울 자료가 됩니다</li>
+    </ul>
+
+    <h3>③ 절차에는 성실하게</h3>
+    <ul>
+      <li>학교 조사에 협조하고, 통지문·안내문은 날짜와 함께 보관하세요</li>
+      <li>보호자 의견 진술 기회가 있습니다 — 감정 호소보다 <b>사실관계와 재발 방지 계획</b>이 설득력 있습니다</li>
+      <li>사실과 다른 부분이 있다면 절차 안에서 소명하세요. 절차 밖의 실력 행사는 아이에게 불리해질 뿐입니다</li>
+      <li>피해 학생 쪽에 진심 어린 사과가 필요한 상황이라면, 방식과 시점을 학교와 상의하세요</li>
+    </ul>
+
+    <div class="checkpoint"><span data-icon="bulb" style="color:#B7791F;"></span> <b>행동과 존재를 구분해 주세요.</b> "네 행동은 잘못됐어. 하지만 엄마(아빠)는 네 편에서 이 일을 함께 바로잡을 거야." — 아이가 자신의 행동을 직면하고 책임지게 하는 힘은, 버려지지 않는다는 안정감에서 나옵니다.</div>
+
+    <h3>④ 그 후 — 다시 자라도록</h3>
+    <ul>
+      <li>아이가 <b>왜</b> 그런 행동을 했는지 함께 들여다보세요 (관계 스트레스, 동조 압력, 충동 조절 등)</li>
+      <li>필요하다면 전문가 상담(위(Wee)클래스·위센터, 청소년상담복지센터 1388)의 도움을 받으세요</li>
+      <li>조치가 끝난 뒤에도 학교·담임 선생님과 소통하며 아이의 관계 회복을 지켜봐 주세요</li>
+    </ul>
+    <p>이 일을 어떻게 지나가느냐가, 아이가 갈등을 다루는 어른으로 자라는 연습이 됩니다.</p>
+  </div>
+
+  <div class="quiz-box" id="quiz"></div>
+
+  <div class="card hidden" id="doneBox" style="border-color:var(--ok-line);background:var(--ok-bg);">
+    <h2 style="color:var(--ok);"><span data-icon="sparkle"></span> 5개 모듈을 모두 마쳤어요!</h2>
+    <p class="desc" style="color:#1F6E4E;">마지막으로 30초, 짧은 의견을 남기고 이수증을 받아보세요.</p>
+    <a class="btn btn-coral mt16" href="survey.html">의견 남기고 이수증 받기</a>
+    <a class="btn btn-ghost mt8" href="index.html">코스 목차로</a>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/quiz.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+  if (!PE.requireCourseSession(1)) return;
+
+  /* 이미 이수한 모듈이면 다음 버튼을 바로 표시 (재방문 시 진행 막힘 방지) */
+  if (PE.isDone('m5')) {
+    document.getElementById('doneBox').classList.remove('hidden');
+    var nb = document.createElement('div');
+    nb.className = 'privacy-note';
+    nb.innerHTML = (window.PEIcon ? PEIcon('check', 'ico') : '') +
+      '<span><b>이미 이수한 모듈이에요.</b> 다시 읽어봐도 좋아요. <a href="#doneBox" style="font-weight:700;">다음으로 넘어가기 ↓</a></span>';
+    var sub = document.querySelector('.page-sub');
+    sub.parentNode.insertBefore(nb, sub.nextSibling);
+  }
+
+  ModuleQuiz({
+    mount: '#quiz',
+    questions: [
+      { q: '"가해 관련자 통보"의 의미로 옳은 것은?',
+        options: ['유죄가 확정되었다는 뜻이다', '사실관계를 확인하는 절차가 시작되었다는 뜻이다', '즉시 전학 조치가 된다는 뜻이다'],
+        answer: 1, explain: '통보는 판정이 아니라 절차의 시작입니다. 침착하게 사실 확인부터 시작하세요.' },
+      { q: '아이에게 상황을 물을 때 바람직한 방식은?',
+        options: ['"너 진짜 그랬어?"라고 단도직입적으로 추궁한다', '"그날 무슨 일이 있었는지 처음부터 말해줄래?"라고 재구성하게 한다', '아이가 상처받지 않게 아무것도 묻지 않는다'],
+        answer: 1, explain: '추궁은 방어와 거짓말을 부릅니다. 시간순으로 재구성하게 하면 맥락과 사실이 드러납니다.' },
+      { q: '이 모듈이 강조한 "행동과 존재의 구분"이란?',
+        options: ['잘못이 확인되기 전까지는 무조건 아이를 감싸는 것', '행동의 잘못은 직면하게 하되, 아이 편에서 함께 바로잡겠다는 안정감을 주는 것', '아이의 존재 자체를 반성하게 하는 것'],
+        answer: 1, explain: '책임지는 힘은 버려지지 않는다는 안정감에서 나옵니다.' }
+    ],
+    onComplete: function () {
+      PE.markDone('m5');
+      HomeDB.logModuleDone('m5');
+      if (PE.isCourseDone()) HomeDB.logCourseDone();
+      var box = document.getElementById('doneBox');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>
