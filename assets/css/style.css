@@ -690,15 +690,6 @@ button { font-family: var(--font-kr); cursor: pointer; }
 }
 .info-card .ic-item:last-child { border-bottom: none; }
 
-/* 블로그 본문 — 참고문헌 */
-.blog-references {
-  font-size: 0.82rem; color: var(--muted); line-height: 1.7;
-  border-top: 1px solid var(--line-soft); padding-top: 16px; margin-top: 20px;
-}
-.blog-references strong { font-size: 0.84rem; color: var(--ink); display: block; margin-bottom: 8px; }
-.blog-references ul { padding-left: 18px; margin: 0; }
-.blog-references li { margin-bottom: 4px; }
-.blog-references em { font-style: italic; }
 
 /* 블로그 본문 — 구분선 */
 .blog-body hr {
