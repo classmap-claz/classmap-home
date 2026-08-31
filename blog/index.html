@@ -14,11 +14,24 @@
     <h1 class="page-title">학부모 가이드</h1>
     <p class="page-sub">학교폭력 예방과 자녀 또래관계에 대해 부모가 알아야 할 것들</p>
 
+    <div class="tag-filter" id="tagFilter"></div>
     <div id="blogList" class="blog-grid"></div>
-    <p class="small tc mt24" id="emptyMsg" style="display:none">아직 등록된 글이 없습니다.</p>
+    <p class="small tc mt24" id="emptyMsg" style="display:none">해당 주제의 글이 없습니다.</p>
   </div>
 
   <div id="site-footer"></div>
+
+  <style>
+    .tag-filter { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 14px; -webkit-overflow-scrolling: touch; }
+    .tag-filter::-webkit-scrollbar { display: none; }
+    .tag-pill {
+      flex: none; padding: 6px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; color: var(--muted); background: var(--line-soft); white-space: nowrap;
+      border: none; cursor: pointer; transition: all .15s; font-family: var(--font-kr);
+    }
+    .tag-pill:hover { background: #E0DEd8; }
+    .tag-pill.active { background: var(--navy); color: #fff; }
+  </style>
 
   <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/progress.js"></script>
@@ -27,28 +40,60 @@
     HomeNav.render(1);
     HomeNav.renderFooter(1);
 
+    var TAG_ORDER = ['전체', '징후', '대응', '예방', '또래관계', '소통', '정보', '절차'];
+    var _allPosts = [];
+    var _activeTag = '전체';
+
+    function renderPosts(posts) {
+      var list = document.getElementById('blogList');
+      var msg = document.getElementById('emptyMsg');
+      if (!posts.length) { list.innerHTML = ''; msg.style.display = ''; return; }
+      msg.style.display = 'none';
+      list.innerHTML = posts.map(function (p) {
+        var thumbHtml = p.thumb
+          ? '<div class="bc-thumb"><img src="' + p.thumb + '" alt="' + p.title + '" loading="lazy"></div>'
+          : '';
+        return '<a href="' + p.slug + '.html" class="blog-card-v2">' +
+          thumbHtml +
+          '<div class="bc-info">' +
+            '<span class="bc-tag">' + p.tag + '</span>' +
+            '<div class="bc-title">' + p.title + '</div>' +
+            '<div class="bc-summary">' + p.summary + '</div>' +
+            '<div class="bc-date">' + p.date + '</div>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+
+    function filterByTag(tag) {
+      _activeTag = tag;
+      var filtered = tag === '전체' ? _allPosts : _allPosts.filter(function (p) { return p.tag === tag; });
+      renderPosts(filtered);
+      document.querySelectorAll('.tag-pill').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.tag === tag);
+      });
+    }
+
+    function renderTags(posts) {
+      var usedTags = {};
+      posts.forEach(function (p) { usedTags[p.tag] = true; });
+      var tags = TAG_ORDER.filter(function (t) { return t === '전체' || usedTags[t]; });
+      var box = document.getElementById('tagFilter');
+      box.innerHTML = tags.map(function (t) {
+        return '<button class="tag-pill' + (t === '전체' ? ' active' : '') + '" data-tag="' + t + '">' + t + '</button>';
+      }).join('');
+      box.addEventListener('click', function (e) {
+        var btn = e.target.closest('.tag-pill');
+        if (btn) filterByTag(btn.dataset.tag);
+      });
+    }
+
     fetch('posts.json')
       .then(function (r) { return r.json(); })
       .then(function (posts) {
-        var list = document.getElementById('blogList');
-        if (!posts.length) {
-          document.getElementById('emptyMsg').style.display = '';
-          return;
-        }
-        list.innerHTML = posts.map(function (p) {
-          var thumbHtml = p.thumb
-            ? '<div class="bc-thumb"><img src="' + p.thumb + '" alt="' + p.title + '" loading="lazy"></div>'
-            : '';
-          return '<a href="' + p.slug + '.html" class="blog-card-v2">' +
-            thumbHtml +
-            '<div class="bc-info">' +
-              '<span class="bc-tag">' + p.tag + '</span>' +
-              '<div class="bc-title">' + p.title + '</div>' +
-              '<div class="bc-summary">' + p.summary + '</div>' +
-              '<div class="bc-date">' + p.date + '</div>' +
-            '</div>' +
-          '</a>';
-        }).join('');
+        _allPosts = posts;
+        renderTags(posts);
+        renderPosts(posts);
       })
       .catch(function () {
         document.getElementById('emptyMsg').style.display = '';

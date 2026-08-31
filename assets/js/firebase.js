@@ -226,6 +226,49 @@
         if (!db) return null;
         return db.ref('parentEdu/schools/' + code).once('value').then(function (s) { return s.val(); });
       }).catch(function () { return null; });
+    },
+
+    logBlogView: function (slug) {
+      if (!hasSchool() || !slug) return Promise.resolve(false);
+      var key = 'pe_blog_' + school() + '_' + slug;
+      if (localStorage.getItem(key)) return Promise.resolve(false);
+      localStorage.setItem(key, String(Date.now()));
+      return ensureInit().then(function (db) {
+        if (!db) return false;
+        var ref = db.ref('parentEdu/blogViews/' + school() + '/' + slug);
+        return ref.transaction(function (n) { return (n || 0) + 1; }).then(function () { return true; });
+      }).catch(function () { return false; });
+    },
+
+    getBlogViews: function (code) {
+      code = code || school();
+      if (!code || code === 'DEMO') return Promise.resolve(null);
+      return ensureInit().then(function (db) {
+        if (!db) return null;
+        return db.ref('parentEdu/blogViews/' + code).once('value').then(function (s) { return s.val(); });
+      }).catch(function () { return null; });
+    },
+
+    registerSchool: function (data) {
+      return ensureInit().then(function (db) {
+        if (!db) return { ok: false, error: '데이터 연결 실패' };
+        var code = data.code.trim().toUpperCase();
+        return db.ref('parentEdu/schools/' + code).once('value').then(function (snap) {
+          if (snap.val()) return { ok: false, error: '이미 사용 중인 코드입니다' };
+          var row = {
+            name: data.name,
+            level: data.level,
+            totalParents: Number(data.totalParents) || 0,
+            adminName: data.adminName,
+            email: data.email,
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+          };
+          return data.tokenHash
+            ? db.ref('parentEdu/schools/' + code).set(Object.assign(row, { adminToken: data.tokenHash }))
+                .then(function () { return { ok: true, code: code }; })
+            : Promise.resolve({ ok: false, error: '비밀번호 필요' });
+        });
+      }).catch(function (e) { return { ok: false, error: e.message || '등록 실패' }; });
     }
   };
 

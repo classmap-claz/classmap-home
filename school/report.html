@@ -144,6 +144,7 @@
       <a href="#sec-funnel">퍼널</a>
       <a href="#sec-grade">학년</a>
       <a href="#sec-class">반별</a>
+      <a href="#sec-blog">블로그</a>
       <a href="#sec-content">콘텐츠</a>
       <a href="#sec-survey">인식조사</a>
       <a href="#sec-cert">이수자</a>
@@ -194,6 +195,13 @@
       <p class="desc" style="margin-bottom:10px;">진입·모듈 이수·코스 이수만 집계합니다 (점검 관련 수치는 학년 단위까지만 제공).</p>
       <div style="overflow-x:auto;"><table id="classTable"></table></div>
       <p class="small mt8">참여 3건 미만인 반은 "3건 미만"으로 표시됩니다.</p>
+    </div>
+
+    <!-- Blog Views -->
+    <div class="card">
+      <h2 id="sec-blog" class="section-title">가장 많이 읽은 블로그</h2>
+      <p class="desc" style="margin-bottom:10px;">우리 학교 학부모가 가장 많이 읽은 블로그 글</p>
+      <div id="blogRank" class="mt8"></div>
     </div>
 
     <!-- Content -->
@@ -278,9 +286,11 @@
       HomeDB.getEvents(code),
       HomeDB.getCerts(code),
       HomeDB.getSurveys(code),
-      HomeDB.getStats(code)
+      HomeDB.getStats(code),
+      HomeDB.getBlogViews(code),
+      fetch('../blog/posts.json').then(function(r){return r.json();}).catch(function(){return [];})
     ]).then(function (r) {
-      render(code, r[0] || {}, r[1] || {}, r[2] || {}, r[3] || {}, r[4] || {});
+      render(code, r[0] || {}, r[1] || {}, r[2] || {}, r[3] || {}, r[4] || {}, r[5] || {}, r[6] || []);
     });
   }
 
@@ -295,7 +305,7 @@
   var GRADES = ['초1','초2','초3','초4','초5','초6','중1','중2','중3','고1','고2','고3'];
 
   /* ──── Render ──── */
-  function render(code, school, eventsObj, certsObj, surveysObj, statsObj) {
+  function render(code, school, eventsObj, certsObj, surveysObj, statsObj, blogViewsObj, blogPosts) {
     var events = objToArr(eventsObj);
     var certs  = objToArr(certsObj);
     var surveys = objToArr(surveysObj);
@@ -358,6 +368,9 @@
 
     /* ── Class ── */
     renderClass(events);
+
+    /* ── Blog ── */
+    renderBlog(blogViewsObj, blogPosts);
 
     /* ── Content ── */
     renderContent(events);
@@ -470,6 +483,30 @@
           return '<tr><td>' + label + '</td><td>' + nEnter + '</td><td>' + c.mod + '</td><td>' + c.course + '</td></tr>';
         }).join('')
       : '<tr><td class="small" style="font-weight:400;">반 정보를 선택한 참여가 아직 없어요.</td></tr>';
+  }
+
+  /* ──── Blog Views ──── */
+  function renderBlog(viewsObj, posts) {
+    var titleMap = {};
+    posts.forEach(function (p) { titleMap[p.slug] = p.title; });
+    var slugs = Object.keys(viewsObj || {});
+    if (!slugs.length) {
+      $('blogRank').innerHTML = '<p class="small">아직 블로그 조회 데이터가 없어요.</p>';
+      return;
+    }
+    var rank = slugs.sort(function (a, b) { return (viewsObj[b] || 0) - (viewsObj[a] || 0); }).slice(0, 10);
+    var maxV = viewsObj[rank[0]] || 1;
+    $('blogRank').innerHTML = rank.map(function (slug, i) {
+      var title = titleMap[slug] || slug;
+      var n = viewsObj[slug] || 0;
+      var colors = ['var(--coral-deep)', 'var(--navy-soft)', 'var(--h-observe)'];
+      var color = i < 3 ? colors[i] : 'var(--muted)';
+      return '<div class="bar-row"><span class="bl" style="width:180px;font-size:0.76rem;">' +
+        '<span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">' + (i + 1) + '</span>' +
+        title + '</span>' +
+        '<span class="bt"><span class="bf" style="width:' + (n / maxV * 100) + '%;background:' + color + ';"></span></span>' +
+        '<span class="bn" style="width:50px;">' + n + '회</span></div>';
+    }).join('');
   }
 
   /* ──── Content Ranking ──── */
