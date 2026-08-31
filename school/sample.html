@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>학교 대시보드 샘플 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css?v=20260831">
+<style>
+  /* ─── Sample Badge ─── */
+  .sample-badge {
+    position: fixed; top: 62px; right: 12px; z-index: 100;
+    background: var(--warn); color: #fff; font-size: 0.72rem; font-weight: 800;
+    padding: 4px 12px; border-radius: 999px; letter-spacing: 0.03em;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+
+  /* ─── KPI ─── */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px; text-align: center; }
+  .kpi .kv { font-family: var(--font-en); font-size: 1.55rem; font-weight: 800; color: var(--navy-deep); line-height: 1.2; }
+  .kpi .ks { font-family: var(--font-en); font-size: 0.82rem; font-weight: 700; color: var(--coral-deep); }
+  .kpi .kl { font-size: 0.73rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+
+  /* ─── Section Nav ─── */
+  .dash-nav { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; margin-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .dash-nav::-webkit-scrollbar { display: none; }
+  .dash-nav a {
+    flex: none; padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    text-decoration: none; color: var(--muted); background: var(--line-soft); white-space: nowrap;
+    transition: all .15s;
+  }
+  .dash-nav a:hover, .dash-nav a:active { background: var(--navy); color: #fff; }
+
+  /* ─── Trend Chart ─── */
+  .trend-wrap { position: relative; }
+  .trend-chart { display: flex; align-items: flex-end; gap: 2px; height: 100px; padding: 0 2px; }
+  .trend-bar {
+    flex: 1; background: var(--navy-soft); border-radius: 3px 3px 0 0; min-width: 3px;
+    position: relative; cursor: default; transition: background .15s;
+  }
+  .trend-bar:hover { background: var(--coral-deep); }
+  .trend-bar .tt {
+    display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: var(--navy-deep); color: #fff; font-size: 0.68rem; padding: 3px 7px;
+    border-radius: 6px; white-space: nowrap; margin-bottom: 4px; z-index: 10;
+  }
+  .trend-bar:hover .tt { display: block; }
+  .trend-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+
+  /* ─── Funnel ─── */
+  .funnel-step { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .funnel-step .fl { width: 72px; flex: none; font-size: 0.78rem; font-weight: 600; color: var(--ink); text-align: right; }
+  .funnel-step .ft { flex: 1; background: var(--line-soft); border-radius: 6px; height: 26px; overflow: hidden; }
+  .funnel-step .ff { height: 100%; border-radius: 6px; transition: width .4s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; }
+  .funnel-step .fv { flex: none; width: 50px; text-align: right; font-family: var(--font-en); font-size: 0.82rem; font-weight: 700; color: var(--navy-deep); }
+  .funnel-conv { text-align: center; font-size: 0.72rem; color: var(--muted); margin: -4px 0 6px 80px; }
+  .funnel-conv b { color: var(--coral-deep); font-family: var(--font-en); }
+
+  /* ─── Bar Rows ─── */
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.82rem; }
+  .bar-row .bl { width: 42px; flex: none; font-weight: 600; }
+  .bar-row .bl-wide { width: 180px; flex: none; font-weight: 600; font-size: 0.78rem; }
+  .bar-row .bt { flex: 1; background: var(--line-soft); border-radius: 6px; height: 18px; overflow: hidden; }
+  .bar-row .bf { height: 100%; border-radius: 6px; min-width: 2px; transition: width .3s ease; }
+  .bar-row .bn { width: 34px; flex: none; text-align: right; font-family: var(--font-en); font-weight: 700; color: var(--navy); }
+  .bar-row .bn-wide { width: 50px; flex: none; text-align: right; font-family: var(--font-en); font-weight: 700; color: var(--navy); }
+
+  /* ─── Tables ─── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid var(--line-soft); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.75rem; }
+  td:first-child { font-weight: 700; color: var(--navy-deep); }
+
+  /* ─── Likert Bar ─── */
+  .likert-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .likert-row .lq { flex: 1; font-size: 0.85rem; font-weight: 600; }
+  .likert-row .lv { font-family: var(--font-en); font-size: 1.1rem; font-weight: 800; color: var(--navy-deep); width: 50px; text-align: right; flex: none; }
+  .likert-track { width: 100px; height: 8px; background: var(--line-soft); border-radius: 999px; flex: none; overflow: hidden; }
+  .likert-fill { height: 100%; background: var(--ok); border-radius: 999px; }
+
+  /* ─── Insights ─── */
+  .insight-card { padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 0.85rem; line-height: 1.6; }
+  .insight-card b { font-weight: 800; }
+  .insight-card.positive { background: var(--ok-bg); border: 1px solid var(--ok-line); color: #1F6E4E; }
+  .insight-card.warning { background: var(--warn-bg); border: 1px solid var(--warn-line); color: #7C5A1A; }
+  .insight-card.action { background: #EEF2F9; border: 1px solid #DCE3F1; color: var(--navy-deep); }
+
+  /* ─── Section ─── */
+  .section-title { font-size: 1.08rem; font-weight: 700; color: var(--navy-deep); margin-bottom: 8px; scroll-margin-top: 60px; }
+
+  /* ─── Rank Badge ─── */
+  .rank-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px; font-family: var(--font-en);
+    font-size: 0.72rem; font-weight: 800; color: #fff; margin-right: 6px; flex: none;
+  }
+  .rank-1 { background: var(--coral-deep); }
+  .rank-2 { background: var(--navy-soft); }
+  .rank-3 { background: var(--h-observe); }
+  .rank-other { background: var(--muted); }
+
+  /* ─── CTA ─── */
+  .sample-cta {
+    text-align: center; padding: 32px 20px; margin-top: 20px;
+    background: var(--card); border: 2px dashed var(--navy-soft); border-radius: var(--radius);
+  }
+  .sample-cta h2 { font-size: 1.15rem; color: var(--navy-deep); margin-bottom: 8px; }
+  .sample-cta p { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; }
+  .sample-cta a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 12px;
+    background: var(--coral-deep); color: #fff;
+    font-size: 0.95rem; font-weight: 700; text-decoration: none;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .sample-cta a:hover { box-shadow: 0 6px 18px rgba(242,107,84,.3); transform: translateY(-1px); }
+
+  /* ─── Print ─── */
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    .top-header, .dash-nav, .sample-badge, .sample-cta, #site-nav { display: none !important; }
+    .wrap { max-width: 100%; padding: 0 10mm; }
+    .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+    .kpi { break-inside: avoid; }
+    .trend-bar .tt { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+<div class="sample-badge">샘플 데이터</div>
+
+<div class="wrap">
+  <h1 class="page-title"><span data-icon="school" style="color:var(--navy-soft);"></span> 해나루초등학교 대시보드</h1>
+  <p class="page-sub">집계 시점: 2026년 8월 31일 오전 10:00 (샘플)</p>
+
+  <div class="privacy-note"><span class="ico" data-icon="lock"></span>
+    <span>이 대시보드는 <b>집계 수치만</b> 표시합니다. 개별 학부모의 접속 기록·열람 페이지·점검 결과는 수집 자체를 하지 않아 표시할 수 없습니다.</span>
+  </div>
+
+  <nav class="dash-nav">
+    <a href="#sec-kpi">현황</a>
+    <a href="#sec-trend">추이</a>
+    <a href="#sec-funnel">퍼널</a>
+    <a href="#sec-blog">블로그</a>
+    <a href="#sec-grade">학년</a>
+    <a href="#sec-content">콘텐츠</a>
+    <a href="#sec-survey">인식조사</a>
+    <a href="#sec-insight">인사이트</a>
+  </nav>
+
+  <!-- ════════ KPI ════════ -->
+  <div id="sec-kpi" class="section-title">참여 현황</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kv">187</div><div class="ks">44.5% 참여율</div><div class="kl">참여 학부모<br>(전체 420가정 중)</div></div>
+    <div class="kpi"><div class="kv">3.2</div><div class="kl">참여자당<br>평균 활동 수</div></div>
+    <div class="kpi"><div class="kv">52</div><div class="ks">27.8% 이수율</div><div class="kl">코스 이수 완료</div></div>
+    <div class="kpi"><div class="kv">38</div><div class="ks">동의 38건</div><div class="kl">이수증 발급</div></div>
+  </div>
+
+  <!-- ════════ Trend ════════ -->
+  <div class="card">
+    <h2 id="sec-trend" class="section-title">일별 참여 추이</h2>
+    <p class="desc">08/01 ~ 08/30 (30일)</p>
+    <div class="trend-wrap" style="margin-top:10px;">
+      <div class="trend-chart" id="trendChart"></div>
+      <div class="trend-labels"><span>08/01</span><span>08/30</span></div>
+    </div>
+  </div>
+
+  <!-- ════════ Funnel ════════ -->
+  <div class="card">
+    <h2 id="sec-funnel" class="section-title">전환 퍼널</h2>
+    <p class="desc" style="margin-bottom:12px;">진입부터 이수증까지, 각 단계의 전환율을 확인하세요.</p>
+
+    <div class="funnel-step"><span class="fl">진입</span><span class="ft"><span class="ff" style="width:100%;background:var(--navy-soft);"></span></span><span class="fv">187</span></div>
+    <div class="funnel-conv">&darr; 전환율 <b>68%</b></div>
+    <div class="funnel-step"><span class="fl">활동 시작</span><span class="ft"><span class="ff" style="width:68%;background:var(--h-observe);"></span></span><span class="fv">127</span></div>
+    <div class="funnel-conv">&darr; 전환율 <b>59%</b></div>
+    <div class="funnel-step"><span class="fl">코스 시작</span><span class="ft"><span class="ff" style="width:40%;background:var(--h-mind);"></span></span><span class="fv">75</span></div>
+    <div class="funnel-conv">&darr; 전환율 <b>69%</b></div>
+    <div class="funnel-step"><span class="fl">코스 이수</span><span class="ft"><span class="ff" style="width:28%;background:var(--h-engage);"></span></span><span class="fv">52</span></div>
+    <div class="funnel-conv">&darr; 전환율 <b>73%</b></div>
+    <div class="funnel-step"><span class="fl">이수증</span><span class="ft"><span class="ff" style="width:20%;background:var(--coral-deep);"></span></span><span class="fv">38</span></div>
+  </div>
+
+  <!-- ════════ Blog ════════ -->
+  <div class="card">
+    <h2 id="sec-blog" class="section-title">가장 많이 읽은 블로그</h2>
+    <p class="desc" style="margin-bottom:12px;">우리 학교 학부모가 가장 많이 읽은 블로그 글 TOP 5</p>
+
+    <div class="bar-row"><span class="bl-wide"><span class="rank-badge rank-1">1</span>우리 아이 왕따 징후 7가지 체크</span><span class="bt"><span class="bf" style="width:100%;background:var(--coral-deep);"></span></span><span class="bn-wide">142회</span></div>
+    <div class="bar-row"><span class="bl-wide"><span class="rank-badge rank-2">2</span>아이가 학교폭력 말했을 때 첫 대화</span><span class="bt"><span class="bf" style="width:69%;background:var(--navy-soft);"></span></span><span class="bn-wide">98회</span></div>
+    <div class="bar-row"><span class="bl-wide"><span class="rank-badge rank-3">3</span>친구가 없다는 아이, 걱정할 신호</span><span class="bt"><span class="bf" style="width:61%;background:var(--h-observe);"></span></span><span class="bn-wide">87회</span></div>
+    <div class="bar-row"><span class="bl-wide"><span class="rank-badge rank-other">4</span>학교폭력 사례로 보는 부모 대응</span><span class="bt"><span class="bf" style="width:54%;background:var(--muted);"></span></span><span class="bn-wide">76회</span></div>
+    <div class="bar-row"><span class="bl-wide"><span class="rank-badge rank-other">5</span>사춘기 자녀 관계 고민 부모 체크</span><span class="bt"><span class="bf" style="width:44%;background:var(--muted);"></span></span><span class="bn-wide">63회</span></div>
+  </div>
+
+  <!-- ════════ Grade ════════ -->
+  <div class="card">
+    <h2 id="sec-grade" class="section-title">학년별 참여 현황</h2>
+    <div style="margin-top:10px;">
+      <div class="bar-row"><span class="bl">1학년</span><span class="bt"><span class="bf" style="width:52%;background:var(--navy-soft);"></span></span><span class="bn">24</span></div>
+      <div class="bar-row"><span class="bl">2학년</span><span class="bt"><span class="bf" style="width:65%;background:var(--navy-soft);"></span></span><span class="bn">30</span></div>
+      <div class="bar-row"><span class="bl">3학년</span><span class="bt"><span class="bf" style="width:78%;background:var(--navy-soft);"></span></span><span class="bn">36</span></div>
+      <div class="bar-row"><span class="bl">4학년</span><span class="bt"><span class="bf" style="width:100%;background:var(--navy-soft);"></span></span><span class="bn">46</span></div>
+      <div class="bar-row"><span class="bl">5학년</span><span class="bt"><span class="bf" style="width:70%;background:var(--navy-soft);"></span></span><span class="bn">32</span></div>
+      <div class="bar-row"><span class="bl">6학년</span><span class="bt"><span class="bf" style="width:41%;background:var(--navy-soft);"></span></span><span class="bn">19</span></div>
+    </div>
+  </div>
+
+  <!-- ════════ Content ════════ -->
+  <div class="card">
+    <h2 id="sec-content" class="section-title">콘텐츠별 참여</h2>
+    <div style="margin-top:10px;">
+      <div class="bar-row"><span class="bl-wide" style="width:130px;"><span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">1</span>마음 맞히기</span><span class="bt"><span class="bf" style="width:100%;background:var(--coral-deep);"></span></span><span class="bn">134</span></div>
+      <div class="bar-row"><span class="bl-wide" style="width:130px;"><span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">2</span>징후 체크</span><span class="bt"><span class="bf" style="width:72%;background:var(--coral-deep);"></span></span><span class="bn">97</span></div>
+      <div class="bar-row"><span class="bl-wide" style="width:130px;"><span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">3</span>관계 습관 체크</span><span class="bt"><span class="bf" style="width:58%;background:var(--coral-deep);"></span></span><span class="bn">78</span></div>
+      <div class="bar-row"><span class="bl-wide" style="width:130px;"><span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">4</span>M1 징후 알아차리기</span><span class="bt"><span class="bf" style="width:56%;background:var(--coral-deep);"></span></span><span class="bn">75</span></div>
+      <div class="bar-row"><span class="bl-wide" style="width:130px;"><span style="color:var(--coral-deep);font-family:var(--font-en);font-weight:800;margin-right:4px;">5</span>M2 대화하는 법</span><span class="bt"><span class="bf" style="width:49%;background:var(--coral-deep);"></span></span><span class="bn">66</span></div>
+    </div>
+
+    <h2 class="section-title" style="margin-top:18px;">코스 퍼널 (모듈별 이수)</h2>
+    <p class="desc" style="margin-bottom:10px;">어느 모듈에서 이탈이 생기는지 확인하세요.</p>
+    <div>
+      <div class="bar-row"><span class="bl">M1</span><span class="bt"><span class="bf" style="width:100%;background:var(--navy-soft);"></span></span><span class="bn">75</span></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin:-2px 0 4px 50px;">&darr; 이탈 <span style="color:var(--risk);font-weight:700;">12%</span></div>
+      <div class="bar-row"><span class="bl">M2</span><span class="bt"><span class="bf" style="width:88%;background:var(--navy-soft);"></span></span><span class="bn">66</span></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin:-2px 0 4px 50px;">&darr; 이탈 <span style="color:var(--risk);font-weight:700;">8%</span></div>
+      <div class="bar-row"><span class="bl">M3</span><span class="bt"><span class="bf" style="width:81%;background:var(--navy-soft);"></span></span><span class="bn">61</span></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin:-2px 0 4px 50px;">&darr; 이탈 <span style="color:var(--risk);font-weight:700;">7%</span></div>
+      <div class="bar-row"><span class="bl">M4</span><span class="bt"><span class="bf" style="width:76%;background:var(--navy-soft);"></span></span><span class="bn">57</span></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin:-2px 0 4px 50px;">&darr; 이탈 <span style="color:var(--risk);font-weight:700;">9%</span></div>
+      <div class="bar-row"><span class="bl">M5</span><span class="bt"><span class="bf" style="width:69%;background:var(--navy-soft);"></span></span><span class="bn">52</span></div>
+    </div>
+  </div>
+
+  <!-- ════════ Survey ════════ -->
+  <div class="card">
+    <h2 id="sec-survey" class="section-title">학부모 인식 조사 (익명 집계)</h2>
+    <div style="margin-top:10px;">
+      <div class="likert-row"><span class="lq">학교 예방·대응 신뢰</span><div class="likert-track"><div class="likert-fill" style="width:82%"></div></div><span class="lv">4.10</span></div>
+      <div class="likert-row"><span class="lq">자녀 이해에 도움</span><div class="likert-track"><div class="likert-fill" style="width:87%"></div></div><span class="lv">4.35</span></div>
+      <div class="likert-row"><span class="lq">다른 학부모에게 추천</span><div class="likert-track"><div class="likert-fill" style="width:84%"></div></div><span class="lv">4.20</span></div>
+      <p class="small" style="margin-top:8px;">5점 만점 · 38명 응답</p>
+
+      <h2 style="font-size:0.9rem;margin-top:14px;font-weight:700;">학교에 바라는 점</h2>
+      <ul style="padding-left:18px;font-size:0.85rem;margin-top:6px;">
+        <li style="margin-bottom:4px;">이런 프로그램을 학기 초에 알려주셨으면 좋겠어요</li>
+        <li style="margin-bottom:4px;">아이들도 직접 참여하는 예방 활동이 있으면 좋겠습니다</li>
+        <li style="margin-bottom:4px;">담임 선생님과 상담할 때 이 결과를 같이 볼 수 있으면 좋겠어요</li>
+        <li style="margin-bottom:4px;">사이버폭력 관련 내용이 더 필요합니다</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════ Insights ════════ -->
+  <div class="card">
+    <h2 id="sec-insight" class="section-title"><span data-icon="bulb" style="color:var(--warn);"></span> 핵심 인사이트</h2>
+    <div style="margin-top:10px;">
+      <div class="insight-card positive">참여율 <b>44.5%</b> — 전체 학부모의 절반 가까이 참여 중입니다. e알리미 재발송으로 50% 돌파를 노려보세요.</div>
+      <div class="insight-card positive">코스 시작 후 이수 완료율이 <b>69%</b>로 높습니다. 콘텐츠 품질이 좋은 신호입니다.</div>
+      <div class="insight-card warning"><b>6학년</b> 참여(19명)가 가장 적습니다. 해당 학년 담임에게 별도 안내를 부탁해 보세요.</div>
+      <div class="insight-card action"><b>마음 맞히기</b>가 가장 인기 있는 콘텐츠입니다. 블로그·가정통신문에서 마음 맞히기 링크를 우선 노출하면 참여율이 올라갑니다.</div>
+      <div class="insight-card action">"<b>왕따 징후 체크</b>" 블로그가 가장 많이 읽혔습니다. 학부모들이 징후 파악에 가장 큰 관심을 보이고 있어요.</div>
+    </div>
+  </div>
+
+  <!-- ════════ CTA ════════ -->
+  <div class="sample-cta">
+    <h2>우리 학교도 시작해 보세요</h2>
+    <p>학교 코드를 받으시면 실제 데이터로 이 대시보드를 확인할 수 있습니다.<br>2026년 2학기까지 무료 체험 기간입니다.</p>
+    <a href="mailto:classmap@claz.kr">classmap@claz.kr 문의하기</a>
+  </div>
+
+  <div id="site-footer"></div>
+</div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+
+  /* ── Mock Trend Data ── */
+  var daily = [5,8,12,7,6,14,18,9,11,15,22,19,13,10,8,16,24,28,21,17,14,11,19,26,31,23,18,15,20,27];
+  var max = Math.max.apply(null, daily);
+  var chart = document.getElementById('trendChart');
+  if (chart) {
+    chart.innerHTML = daily.map(function (n, i) {
+      var d = String(i + 1).padStart(2, '0');
+      var h = Math.max(n / max * 100, 3);
+      return '<div class="trend-bar" style="height:' + h + '%"><span class="tt">08/' + d + ' · ' + n + '명</span></div>';
+    }).join('');
+  }
+})();
+</script>
+</body>
+</html>
