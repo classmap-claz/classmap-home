@@ -229,14 +229,26 @@
     },
 
     logBlogView: function (slug) {
-      if (!hasSchool() || !slug) return Promise.resolve(false);
-      var key = 'pe_blog_' + school() + '_' + slug;
-      if (localStorage.getItem(key)) return Promise.resolve(false);
-      localStorage.setItem(key, String(Date.now()));
+      if (!slug) return Promise.resolve(false);
+      var codes = [];
+      if (hasSchool()) codes.push(school());
+      HomeDB.getAffiliations().forEach(function (a) {
+        if (a.code && codes.indexOf(a.code) < 0) codes.push(a.code);
+      });
+      if (!codes.length) return Promise.resolve(false);
+      var toLog = codes.filter(function (c) {
+        var key = 'pe_blog_' + c + '_' + slug;
+        if (localStorage.getItem(key)) return false;
+        localStorage.setItem(key, String(Date.now()));
+        return true;
+      });
+      if (!toLog.length) return Promise.resolve(false);
       return ensureInit().then(function (db) {
         if (!db) return false;
-        var ref = db.ref('parentEdu/blogViews/' + school() + '/' + slug);
-        return ref.transaction(function (n) { return (n || 0) + 1; }).then(function () { return true; });
+        return Promise.all(toLog.map(function (c) {
+          return db.ref('parentEdu/blogViews/' + c + '/' + slug)
+            .transaction(function (n) { return (n || 0) + 1; });
+        })).then(function () { return true; });
       }).catch(function () { return false; });
     },
 
@@ -249,26 +261,54 @@
       }).catch(function () { return null; });
     },
 
-    registerSchool: function (data) {
+    submitApplication: function (data) {
       return ensureInit().then(function (db) {
         if (!db) return { ok: false, error: '데이터 연결 실패' };
-        var code = data.code.trim().toUpperCase();
-        return db.ref('parentEdu/schools/' + code).once('value').then(function (snap) {
-          if (snap.val()) return { ok: false, error: '이미 사용 중인 코드입니다' };
-          var row = {
-            name: data.name,
-            level: data.level,
-            totalParents: Number(data.totalParents) || 0,
-            adminName: data.adminName,
-            email: data.email,
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-          };
-          return data.tokenHash
-            ? db.ref('parentEdu/schools/' + code).set(Object.assign(row, { adminToken: data.tokenHash }))
-                .then(function () { return { ok: true, code: code }; })
-            : Promise.resolve({ ok: false, error: '비밀번호 필요' });
+        var row = {
+          name: data.name,
+          level: data.level,
+          totalParents: Number(data.totalParents) || 0,
+          adminName: data.adminName,
+          email: data.email,
+          phone: data.phone || '',
+          message: data.message || '',
+          status: 'pending',
+          createdAt: firebase.database.ServerValue.TIMESTAMP
+        };
+        return db.ref('parentEdu/applications').push(row)
+          .then(function () { return { ok: true }; });
+      }).catch(function (e) { return { ok: false, error: e.message || '신청 실패' }; });
+    },
+
+    getSchoolDirectory: function () {
+      return ensureInit().then(function (db) {
+        if (!db) return [];
+        return db.ref('parentEdu/directory').once('value').then(function (snap) {
+          var val = snap.val();
+          if (!val) return [];
+          return Object.keys(val).map(function (code) {
+            return { code: code, name: val[code].name || code, level: val[code].level || '' };
+          });
         });
-      }).catch(function (e) { return { ok: false, error: e.message || '등록 실패' }; });
+      }).catch(function () { return []; });
+    },
+
+    getAffiliations: function () {
+      try { return JSON.parse(localStorage.getItem('pe_affiliations') || '[]'); }
+      catch (e) { return []; }
+    },
+
+    addAffiliation: function (code, name) {
+      var list = HomeDB.getAffiliations();
+      if (list.some(function (a) { return a.code === code; })) return false;
+      list.push({ code: code, name: name });
+      localStorage.setItem('pe_affiliations', JSON.stringify(list));
+      return true;
+    },
+
+    removeAffiliation: function (code) {
+      var list = HomeDB.getAffiliations().filter(function (a) { return a.code !== code; });
+      localStorage.setItem('pe_affiliations', JSON.stringify(list));
     }
   };
 

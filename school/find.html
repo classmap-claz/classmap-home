@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 학교 찾기 — ClassMap HOME</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css?v=20260831">
+<style>
+  .find-hero { text-align: center; padding: 36px 0 20px; }
+  .find-hero h1 { font-size: 1.5rem; font-weight: 800; color: var(--navy-deep); margin-bottom: 8px; }
+  .find-hero p { font-size: 0.92rem; color: var(--muted); line-height: 1.6; }
+
+  .search-box {
+    position: relative; margin-bottom: 20px;
+  }
+  .search-box input {
+    width: 100%; padding: 14px 16px 14px 44px; border: 2px solid var(--line);
+    border-radius: 14px; font-size: 1rem; font-family: var(--font-kr);
+    background: var(--card); outline: none; box-sizing: border-box;
+  }
+  .search-box input:focus { border-color: var(--navy-soft); }
+  .search-box .search-ico {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px; color: var(--muted);
+  }
+
+  .school-list { min-height: 100px; }
+  .school-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 12px;
+    margin-bottom: 8px; background: var(--card); transition: border-color .15s;
+  }
+  .school-item:hover { border-color: var(--navy-soft); }
+  .si-info { flex: 1; min-width: 0; }
+  .si-name { font-size: 0.95rem; font-weight: 700; color: var(--navy-deep); }
+  .si-level { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .si-btn {
+    flex: none; padding: 8px 16px; border: none; border-radius: 10px;
+    font-size: 0.82rem; font-weight: 700; font-family: var(--font-kr);
+    cursor: pointer; transition: all .15s;
+  }
+  .si-btn.join { background: var(--coral-deep); color: #fff; }
+  .si-btn.join:hover { box-shadow: 0 4px 12px rgba(242,107,84,.25); }
+  .si-btn.joined { background: var(--line-soft); color: var(--ok); cursor: default; }
+
+  .empty-state {
+    text-align: center; padding: 40px 16px; color: var(--muted);
+    font-size: 0.9rem; line-height: 1.6;
+  }
+  .empty-state .empty-ico { font-size: 2.5rem; margin-bottom: 8px; opacity: .5; }
+
+  .my-section { margin-top: 32px; }
+  .my-section h2 { font-size: 1rem; font-weight: 800; color: var(--navy-deep); margin-bottom: 12px; }
+  .my-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border: 1.5px solid var(--line); border-radius: 12px;
+    margin-bottom: 8px; background: var(--card);
+  }
+  .my-item .si-info { flex: 1; }
+  .my-remove {
+    flex: none; padding: 6px 12px; border: 1.5px solid var(--risk-bg);
+    border-radius: 8px; background: transparent; color: var(--risk);
+    font-size: 0.78rem; font-weight: 600; font-family: var(--font-kr); cursor: pointer;
+  }
+  .my-remove:hover { background: var(--risk-bg); }
+
+  .info-box {
+    background: #F0F4FF; border: 1px solid #D0DAF0; border-radius: 12px;
+    padding: 14px 16px; font-size: 0.82rem; line-height: 1.6; color: var(--navy);
+    margin-top: 24px;
+  }
+  .info-box strong { font-weight: 700; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--navy-deep); color: #fff; padding: 12px 24px;
+    border-radius: 12px; font-size: 0.88rem; font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,.2); z-index: 999;
+    opacity: 0; transition: opacity .3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="site-nav"></div>
+
+<div class="wrap">
+  <div class="find-hero">
+    <h1>우리 학교 찾기</h1>
+    <p>학교 이름을 검색해서 소속을 등록하세요.<br>학부모 활동이 학교 대시보드에 반영됩니다.</p>
+  </div>
+
+  <div class="search-box">
+    <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="학교 이름을 입력하세요" autocomplete="off">
+  </div>
+
+  <div class="school-list" id="schoolList">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-ico" data-icon="school"></div>
+      <div>학교 이름을 입력하면<br>등록된 학교를 검색할 수 있습니다.</div>
+    </div>
+  </div>
+
+  <div class="my-section" id="mySection" style="display:none;">
+    <h2>내 소속 학교</h2>
+    <div id="myList"></div>
+  </div>
+
+  <div class="info-box">
+    <strong>소속을 등록하면?</strong><br>
+    블로그 조회, 진단 참여 등 활동이 소속 학교의 대시보드에 집계됩니다.
+    여러 학교에 동시 소속될 수 있습니다.
+    이 정보는 이 기기에만 저장되며, 개인 식별 정보는 수집하지 않습니다.
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="site-footer"></div>
+
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/firebase-config.js"></script>
+<script src="../assets/js/firebase.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  HomeNav.render(1);
+  HomeNav.renderFooter(1);
+
+  var _directory = [];
+  var _affiliations = HomeDB.getAffiliations();
+
+  function isAffiliated(code) {
+    return _affiliations.some(function (a) { return a.code === code; });
+  }
+
+  function showToast(text) {
+    var t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2000);
+  }
+
+  function renderMySchools() {
+    _affiliations = HomeDB.getAffiliations();
+    var sec = document.getElementById('mySection');
+    var list = document.getElementById('myList');
+    if (!_affiliations.length) { sec.style.display = 'none'; return; }
+    sec.style.display = '';
+    list.innerHTML = _affiliations.map(function (a) {
+      return '<div class="my-item">' +
+        '<div class="si-info"><div class="si-name">' + a.name + '</div></div>' +
+        '<button class="my-remove" data-code="' + a.code + '">해제</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderResults(query) {
+    var listEl = document.getElementById('schoolList');
+    var emptyEl = document.getElementById('emptyState');
+
+    if (!query) {
+      listEl.innerHTML = '';
+      listEl.appendChild(emptyEl);
+      emptyEl.style.display = '';
+      emptyEl.querySelector('div:last-child').innerHTML =
+        '학교 이름을 입력하면<br>등록된 학교를 검색할 수 있습니다.';
+      return;
+    }
+
+    var q = query.toLowerCase();
+    var matches = _directory.filter(function (s) {
+      return s.name.toLowerCase().indexOf(q) >= 0;
+    });
+
+    if (!matches.length) {
+      listEl.innerHTML = '';
+      listEl.appendChild(emptyEl);
+      emptyEl.style.display = '';
+      emptyEl.querySelector('div:last-child').innerHTML =
+        '"' + query + '" 검색 결과가 없습니다.<br><span style="font-size:0.82rem;">학교 선생님이 아직 등록하지 않았을 수 있습니다.</span>';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = matches.map(function (s) {
+      var aff = isAffiliated(s.code);
+      return '<div class="school-item">' +
+        '<div class="si-info">' +
+          '<div class="si-name">' + s.name + '</div>' +
+          '<div class="si-level">' + s.level + '</div>' +
+        '</div>' +
+        '<button class="si-btn ' + (aff ? 'joined' : 'join') + '" data-code="' + s.code + '" data-name="' + s.name + '"' +
+          (aff ? ' disabled' : '') + '>' + (aff ? '등록됨' : '소속 등록') + '</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('schoolList').addEventListener('click', function (e) {
+    var btn = e.target.closest('.si-btn.join');
+    if (!btn) return;
+    var code = btn.dataset.code;
+    var name = btn.dataset.name;
+    HomeDB.addAffiliation(code, name);
+    btn.textContent = '등록됨';
+    btn.className = 'si-btn joined';
+    btn.disabled = true;
+    renderMySchools();
+    showToast(name + ' 소속이 등록되었습니다');
+  });
+
+  document.getElementById('myList').addEventListener('click', function (e) {
+    var btn = e.target.closest('.my-remove');
+    if (!btn) return;
+    var code = btn.dataset.code;
+    HomeDB.removeAffiliation(code);
+    renderMySchools();
+    renderResults(document.getElementById('searchInput').value.trim());
+    showToast('소속이 해제되었습니다');
+  });
+
+  var _debounce;
+  document.getElementById('searchInput').addEventListener('input', function () {
+    clearTimeout(_debounce);
+    var q = this.value.trim();
+    _debounce = setTimeout(function () { renderResults(q); }, 200);
+  });
+
+  HomeDB.getSchoolDirectory().then(function (list) {
+    _directory = list;
+  });
+
+  renderMySchools();
+})();
+</script>
+</body>
+</html>

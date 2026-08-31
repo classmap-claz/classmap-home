@@ -5,7 +5,8 @@
   if (!slug || slug === 'index') return;
 
   function ready() {
-    if (typeof HomeDB !== 'undefined' && HomeDB.hasSchool()) {
+    if (typeof HomeDB !== 'undefined' &&
+        (HomeDB.hasSchool() || HomeDB.getAffiliations().length > 0)) {
       HomeDB.logBlogView(slug);
     }
   }
