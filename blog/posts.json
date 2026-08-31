@@ -1,5 +1,77 @@
 [
   {
+    "slug": "sibling-peer-connection",
+    "title": "형제 관계가 또래관계에 미치는 영향",
+    "date": "2026-09-12",
+    "tag": "또래관계",
+    "summary": "형제 사이에서 배운 갈등 해결과 양보의 경험이 학교에서의 또래관계에 그대로 이어집니다.",
+    "keyword": "또래관계",
+    "thumb": "https://images.pexels.com/photos/8613312/pexels-photo-8613312.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "parent-rights-school-violence",
+    "title": "학교폭력 시 부모의 법적 권리",
+    "date": "2026-09-11",
+    "tag": "절차",
+    "summary": "사안 조사 요청부터 심의위원회 참석, 이의 신청까지. 부모가 알아야 할 법적 권리를 정리했습니다.",
+    "keyword": "학교폭력처벌",
+    "thumb": "https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "empathy-practice-home",
+    "title": "공감 능력, 가정에서 키우는 5가지",
+    "date": "2026-09-10",
+    "tag": "또래관계",
+    "summary": "공감은 타고나는 게 아니라 연습하는 겁니다. 가정에서 매일 할 수 있는 공감 훈련 5가지.",
+    "keyword": "또래관계프로그램",
+    "thumb": "https://images.pexels.com/photos/4260325/pexels-photo-4260325.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "group-chat-exclusion",
+    "title": "단톡방 따돌림에서 아이를 지키는 법",
+    "date": "2026-09-09",
+    "tag": "예방",
+    "summary": "단톡방에서 일어나는 따돌림은 증거가 남지만 상처도 깊습니다. 초등과 중고등 아이별 대응법.",
+    "keyword": "사이버폭력",
+    "thumb": "https://images.pexels.com/photos/4145078/pexels-photo-4145078.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "returning-after-incident",
+    "title": "학교폭력 후 복귀, 부모가 챙길 것",
+    "date": "2026-09-08",
+    "tag": "대응",
+    "summary": "사건이 해결된 뒤가 진짜 시작입니다. 복귀 전 준비, 첫 주 대화법, 전학 판단 기준까지.",
+    "keyword": "학교폭력",
+    "thumb": "https://images.pexels.com/photos/6936459/pexels-photo-6936459.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "child-hides-school-life",
+    "title": "아이가 학교 이야기를 숨기는 이유",
+    "date": "2026-09-07",
+    "tag": "징후",
+    "summary": "학교 이야기를 안 하는 건 사춘기 때문만이 아닙니다. 프라이버시와 비밀의 차이를 아는 것이 시작입니다.",
+    "keyword": "학교폭력징후",
+    "thumb": "https://images.pexels.com/photos/7929443/pexels-photo-7929443.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "school-committee-guide",
+    "title": "학교폭력 심의위원회 부모 가이드",
+    "date": "2026-09-06",
+    "tag": "절차",
+    "summary": "심의위원회가 어떻게 진행되는지, 부모는 무엇을 준비해야 하는지 단계별로 정리했습니다.",
+    "keyword": "학교폭력처벌",
+    "thumb": "https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "conflict-vs-bullying",
+    "title": "친구 갈등과 왕따, 뭐가 다를까",
+    "date": "2026-09-05",
+    "tag": "정보",
+    "summary": "싸웠다고 다 왕따가 아닙니다. 갈등과 괴롭힘을 구분하는 3가지 기준과 부모의 대응법.",
+    "keyword": "학교폭력",
+    "thumb": "https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
     "slug": "before-teacher-meeting",
     "title": "담임 상담 전 부모가 준비할 3가지",
     "date": "2026-09-04",
