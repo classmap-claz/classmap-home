@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /school/
+Disallow: /course/cert.html
+Disallow: /course/survey.html
+
+User-agent: Yeti
+Allow: /
+Disallow: /school/
+Disallow: /course/cert.html
+Disallow: /course/survey.html
+
+Sitemap: https://home.classmapcare.kr/sitemap.xml

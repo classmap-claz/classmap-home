@@ -1,5 +1,41 @@
 [
   {
+    "slug": "photo-cyberbullying-elementary",
+    "title": "사진 한 장이 사이버폭력이 되기까지",
+    "date": "2026-10-20",
+    "tag": "정보",
+    "summary": "넘어진 친구 사진, ㅋㅋ 하나, 캡처 한 번. 손대지 않아도 사이버폭력이 되는 이유와 어디서부터 선을 넘는지 짚었습니다.",
+    "keyword": "초등 사이버폭력",
+    "thumb": "https://images.pexels.com/photos/4144222/pexels-photo-4144222.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "deepfake-photo-children",
+    "title": "딥페이크 사진, 저장만 해도 처벌될까",
+    "date": "2026-10-20",
+    "tag": "정보",
+    "summary": "친구 얼굴 합성 사진, 받기만 했는데 괜찮을까요? 일반 사진과 성적 합성물을 두 갈래로 나누고, 받았을 때 부모가 할 일을 정리했습니다.",
+    "keyword": "딥페이크 학교폭력",
+    "thumb": "https://images.pexels.com/photos/10387709/pexels-photo-10387709.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "cyberbullying-golden-time",
+    "title": "초등이 사이버폭력 골든타임인 이유",
+    "date": "2026-10-20",
+    "tag": "예방",
+    "summary": "초등 피해응답률은 6년 연속 올랐지만, 부모에게 말하는 힘도 초등이 가장 큽니다. 2026년 실태조사 숫자로 본 \"지금\"의 의미.",
+    "keyword": "사이버폭력 예방",
+    "thumb": "https://images.pexels.com/photos/8535570/pexels-photo-8535570.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "slug": "cyberbullying-parent-response",
+    "title": "사이버폭력을 털어놓은 날, 부모의 말",
+    "date": "2026-10-20",
+    "tag": "대응",
+    "summary": "피해를 알았을 때 4단계, 그 순간 꺼낼 첫 문장, 일을 키우는 대응 6가지. 우리 아이가 하는 쪽이거나 보는 쪽일 때까지.",
+    "keyword": "사이버폭력 대처",
+    "thumb": "https://images.pexels.com/photos/8535577/pexels-photo-8535577.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
     "slug": "sibling-peer-connection",
     "title": "형제 관계가 또래관계에 미치는 영향",
     "date": "2026-09-12",
